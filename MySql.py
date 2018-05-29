@@ -10,6 +10,29 @@ dbname = 'pyWetter'
 newDB = True
 Base = declarative_base()
 
+
+class Wettercom(Base):
+    __tablename__ ='wettercom'
+
+    websitename = Column(String(50),primary_key=True)
+    url = Column(String(100))
+    measure_date = Column(Integer,primary_key=True) #TODO
+    measure_date_prediction = Column(Integer, primary_key=True)  # TODO
+    postcode = Column(Integer)
+    city = Column(String(50))
+    temp = Column(Float)
+    humidity_prob =Column(Float)
+    precipitation_amount = Column(Float)
+    precipitation_type = Column(String(50))
+    wind_speed = Column(Float)
+    air_pressure_ground = Column(Float)
+    air_pressure_sea = Column(Float)
+    max_temp = Column(Float)
+    min_temp = Column(Float)
+    sun_hours = Column(Float)
+    clouds = Column(String(50))
+
+
 #https://stackoverflow.com/questions/31394998/using-sqlalchemy-to-load-csv-file-into-a-database
 class Dwd(Base):
     __tablename__ ='dwd'
