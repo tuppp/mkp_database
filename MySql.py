@@ -10,6 +10,27 @@ dbname = 'pyWetter'
 newDB = True
 Base = declarative_base()
 
+class Accuweathercom(Base):
+    __tablename__ ='accuweathercom'
+
+    websitename = Column(String(50),primary_key=True)
+    url = Column(String(100))
+    measure_date = Column(Integer,primary_key=True) #TODO
+    measure_date_prediction = Column(Integer, primary_key=True)  # TODO
+    postcode = Column(Integer)
+    city = Column(String(50))
+    temp = Column(Float)
+    humidity_prob =Column(Float)
+    precipitation_amount = Column(Float)
+    precipitation_type = Column(String(50))
+    wind_speed = Column(Float)
+    air_pressure_ground = Column(Float)
+    air_pressure_sea = Column(Float)
+    max_temp = Column(Float)
+    min_temp = Column(Float)
+    sun_hours = Column(Float)
+    clouds = Column(String(50))
+
 
 class Wettercom(Base):
     __tablename__ ='wettercom'
@@ -37,14 +58,6 @@ class Wettercom(Base):
 class Dwd(Base):
     __tablename__ ='dwd'
 
-    '''
-    STATIONS_ID = Column(String(40))
-    MESS_DATUM =  Column(String(40),primary_key=True)
-    D_Windgesch = Column(String(40))
-    NS_Menge = Column(Integer)
-    NS_Art = Column(String(40))
-    D_Temp = Column(Integer)
-    '''
     station_id = Column(Integer,primary_key=True)
     station_name = Column(String(100))
     postcode = Column(Integer)
