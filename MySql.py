@@ -10,48 +10,37 @@ dbname = 'pyWetter'
 newDB = True
 Base = declarative_base()
 
-class Accuweathercom(Base):
+class Websites(Base):
+    __tablename__ = 'websites'
+    websitename = Column(String(50), primary_key=True)
+    url = Column(String(100))
+
+class Website_Data():
+    measure_date = Column(Integer,primary_key=True) #TODO
+    measure_date_prediction = Column(Integer, primary_key=True)  # TODO
+    postcode = Column(Integer)
+    city = Column(String(50))
+    temp = Column(Float)
+    humidity_prob =Column(Float)
+    precipitation_amount = Column(Float)
+    precipitation_type = Column(String(50))
+    wind_speed = Column(Float)
+    air_pressure_ground = Column(Float)
+    air_pressure_sea = Column(Float)
+    max_temp = Column(Float)
+    min_temp = Column(Float)
+    sun_hours = Column(Float)
+    clouds = Column(String(50))
+
+class Test_Website(Base,Website_Data):
+    __tablename__ = 'testwebsite'
+
+class Accuweathercom(Base,Website_Data):
     __tablename__ ='accuweathercom'
 
-    websitename = Column(String(50),primary_key=True)
-    url = Column(String(100))
-    measure_date = Column(Integer,primary_key=True) #TODO
-    measure_date_prediction = Column(Integer, primary_key=True)  # TODO
-    postcode = Column(Integer)
-    city = Column(String(50))
-    temp = Column(Float)
-    humidity_prob =Column(Float)
-    precipitation_amount = Column(Float)
-    precipitation_type = Column(String(50))
-    wind_speed = Column(Float)
-    air_pressure_ground = Column(Float)
-    air_pressure_sea = Column(Float)
-    max_temp = Column(Float)
-    min_temp = Column(Float)
-    sun_hours = Column(Float)
-    clouds = Column(String(50))
 
-
-class Wettercom(Base):
+class Wettercom(Base,Website_Data):
     __tablename__ ='wettercom'
-
-    websitename = Column(String(50),primary_key=True)
-    url = Column(String(100))
-    measure_date = Column(Integer,primary_key=True) #TODO
-    measure_date_prediction = Column(Integer, primary_key=True)  # TODO
-    postcode = Column(Integer)
-    city = Column(String(50))
-    temp = Column(Float)
-    humidity_prob =Column(Float)
-    precipitation_amount = Column(Float)
-    precipitation_type = Column(String(50))
-    wind_speed = Column(Float)
-    air_pressure_ground = Column(Float)
-    air_pressure_sea = Column(Float)
-    max_temp = Column(Float)
-    min_temp = Column(Float)
-    sun_hours = Column(Float)
-    clouds = Column(String(50))
 
 
 #https://stackoverflow.com/questions/31394998/using-sqlalchemy-to-load-csv-file-into-a-database
@@ -93,10 +82,11 @@ def main():
     se = Session()
 
     #TODO Pfad ändern
-    Load_Data('C:\\Users\Vika\Documents\TU\ProgPraktikum\data.csv', engine,se)
+    #Load_Data('C:\\Users\Vika\Documents\TU\ProgPraktikum\data.csv', engine,se)
+    Load_Data('C:\\Users\Vika\Documents\TU\ProgPraktikum\ssdasd.txt',se,"testwebsite")
 
-    for date in se.query(Dwd.measure_date).filter(Dwd.average_temp < 15):
-        print(date)
+    #for date in se.query(Dwd.measure_date).filter(Dwd.average_temp < 15):
+        #print(date)
 
     se.close()
 
@@ -112,40 +102,94 @@ def printTables(m):
         for column in table.c:
             print(column.name)
 
-def Load_Data(file_name,engine, se):
+def Load_Data(file_name,se,tablename):
+    klassname = Dwd
+    trennsymbol = ";"
+    if tablename == "dwd":
+        klassname = Dwd
+    elif tablename == "accuweathercom":
+        klassname = Accuweathercom
+        trennsymbol = ","
+    elif tablename == "wettercom":
+        trennsymbol = ","
+        klassname = Wettercom
+    elif tablename == "testwebsite":
+        trennsymbol = ","
+        klassname = Test_Website
+
+    Load_Data_real(file_name, se, trennsymbol, klassname)
+
+def Load_Data_real(file_name,se,trennsymbol,klassname):
 
     datafile = open(file_name, 'r')
-    readCSV = csv.reader(datafile, delimiter=';')
+    readCSV = csv.reader(datafile, delimiter=trennsymbol)
     count = 0
     for row in readCSV:
+        for i in range(len(row)):
+            if row[i] == "nan" or row[i] == "None" or row[i] == "":
+                row[i] = sqla.sql.null()
+            elif klassname != Dwd:
+                row[i] = row[i][1:-1]
         if count > 0:
-            for i in range(len(row)):
-                if row[i] == "nan" or row[i] == "None":
-                    row[i] = sqla.sql.null()
+            if klassname == Dwd:
+                nrow = Dwd(**{
+                  'station_id' :row[0],
+                  'station_name' :row[1],
+                 'postcode' :row[2],
+                 'measure_date' :row[3],
+                 'quality_1' : row[4],
+                 'max_wind_speed' :row[5],
+                 'average_wind_speed' :row[6],
+                 'quality_2' :row[7],
+                  'precipitation_amount' :row[8],
+                  'precipitation_type' :row[9],
+                  'sun_hours' :row[10],
+                 'snow_height':row[11],
+                 'coverage_amount' :row[12],
+                 'vapor_pressure' :row[13],
+                 'air_pressure' :row[14],
+                 'average_temp' :row[15],
+                 'relative_himidity':row[16],
+                 'max_temp' :row[17],
+                 'min_temp' :row[18],
+                 'ground_min_temp' :row[19]
+                })
+                se.add(nrow)
 
-            nrow = Dwd(**{
-                'station_id' :row[0],
-                'station_name' :row[1],
-                'postcode' :row[2],
-                'measure_date' :row[3],
-                'quality_1' : row[4],
-                'max_wind_speed' :row[5],
-                'average_wind_speed' :row[6],
-                'quality_2' :row[7],
-                'precipitation_amount' :row[8],
-                'precipitation_type' :row[9],
-                'sun_hours' :row[10],
-                'snow_height':row[11],
-                'coverage_amount' :row[12],
-                'vapor_pressure' :row[13],
-                'air_pressure' :row[14],
-                'average_temp' :row[15],
-                'relative_himidity':row[16],
-                'max_temp' :row[17],
-                'min_temp' :row[18],
-                'ground_min_temp' :row[19]
-            })
-            se.add(nrow)
+            else:
+                if count == 1:
+                    wrow = Websites(**{
+                        'websitename':row[0],
+                        'url':row[0]
+                    })
+                    se.add(wrow)
+
+                    try:
+                        se.commit()
+                    except sqla.exc.IntegrityError:
+                        # se.expunge(row)
+                        se.rollback()
+                        print("°J°")
+
+                nrow = klassname(**{
+                    'measure_date' :row[1],
+                    'measure_date_prediction' :row[2],
+                    'postcode':row[3],
+                    'city':row[4],
+                    'temp':row[5],
+                    'humidity_prob':row[6],
+                    'precipitation_amount':row[7],
+                    'precipitation_type':row[8],
+                    'wind_speed':row[9],
+                    'air_pressure_ground':row[10],
+                    'air_pressure_sea':row[11],
+                    'max_temp':row[12],
+                    'min_temp':row[13],
+                    'sun_hours':row[14],
+                    'clouds':row[15]
+                })
+
+                se.add(nrow)
 
             try:
                  se.commit()
