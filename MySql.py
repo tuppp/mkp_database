@@ -5,10 +5,13 @@ from numpy import genfromtxt
 import csv
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import *
+import datetime
+
 
 dbname = 'pyWetter'
 newDB = True
 Base = declarative_base()
+all_table_names = {'websites','testwebsite','accuweathercom','openweathermaporg','wettercom','wetterde','wetterdienstde'}
 
 class Websites(Base):
     __tablename__ = 'websites'
@@ -17,7 +20,9 @@ class Websites(Base):
 
 class Website_Data():
     measure_date = Column(Integer,primary_key=True) #TODO
+    measure_date_hour = Column(Integer)
     measure_date_prediction = Column(Integer, primary_key=True)  # TODO
+    measure_date_prediction_hour = Column(Integer)
     postcode = Column(Integer)
     city = Column(String(50))
     temp = Column(Float)
@@ -38,9 +43,17 @@ class Test_Website(Base,Website_Data):
 class Accuweathercom(Base,Website_Data):
     __tablename__ ='accuweathercom'
 
+class Openweathermaporg(Base,Website_Data):
+    __tablename__ ='openweathermaporg'
 
 class Wettercom(Base,Website_Data):
     __tablename__ ='wettercom'
+
+class Wetterde(Base,Website_Data):
+    __tablename__ ='wetterde'
+
+class Wetterdienstde(Base,Website_Data):
+    __tablename__ ='wetterdienstde'
 
 
 #https://stackoverflow.com/questions/31394998/using-sqlalchemy-to-load-csv-file-into-a-database
@@ -129,7 +142,8 @@ def Load_Data_real(file_name,se,trennsymbol,klassname):
             if row[i] == "nan" or row[i] == "None" or row[i] == "":
                 row[i] = sqla.sql.null()
             elif klassname != Dwd:
-                row[i] = row[i][1:-1]
+                print(":)")
+                #row[i] = row[i][1:-1]
         if count > 0:
             if klassname == Dwd:
                 nrow = Dwd(**{
@@ -170,10 +184,13 @@ def Load_Data_real(file_name,se,trennsymbol,klassname):
                         # se.expunge(row)
                         se.rollback()
                         print("°J°")
-
+                date,hour = unix_time_to_normal_time(row[1])
+                date_p,hour_p =unix_time_to_normal_time(row[2])
                 nrow = klassname(**{
-                    'measure_date' :row[1],
-                    'measure_date_prediction' :row[2],
+                    'measure_date' :date,
+                    'measure_date_hour': hour,
+                    'measure_date_prediction' :date_p,
+                    'measure_date_prediction_hour': hour_p,
                     'postcode':row[3],
                     'city':row[4],
                     'temp':row[5],
@@ -201,6 +218,11 @@ def Load_Data_real(file_name,se,trennsymbol,klassname):
 
             # http://docs.sqlalchemy.org/en/latest/orm/tutorial.html#querying
 
+def unix_time_to_normal_time(utime):
+    stamp = int(float(utime))
+    date = datetime.datetime.fromtimestamp(stamp).strftime('%Y%m%d')
+    hour = datetime.datetime.fromtimestamp(stamp).strftime('%H')
+    return date,hour
 
 if __name__ == "__main__":
     main()
