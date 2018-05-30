@@ -96,19 +96,26 @@ def main():
 
     #TODO Pfad ändern
     #Load_Data('C:\\Users\Vika\Documents\TU\ProgPraktikum\data.csv', engine,se)
-    bad_input = True
-    while(bad_input):
-        path = input("Enter a dircetory: ")
+    bad_table = True
+    websitename = null;
+
+    while(bad_table):
         websitename = input("Enter a table name: ")
         if(websitename not in all_table_names):
             print("Please enter a valid table name! (websites','testwebsite','accuweathercom','openweathermaporg','wettercom','wetterde','wetterdienstde)")
             continue
+        else:
+            bad_table = False
+
+    bad_dir = True
+    while (bad_dir):
+        path = input("Enter a file path: ")
         try:
-            Load_Data('C:\\Users\Vika\Documents\TU\ProgPraktikum\ssdasd.txt', se, "testwebsite")
+            Load_Data(path, se, websitename)
         except:
-            print("Please enter a valid directory!")
+            print("Please enter a valid file path!")
             continue
-        bad_input = False
+        bad_dir = False
 
     #for date in se.query(Dwd.measure_date).filter(Dwd.average_temp < 15):
         #print(date)
