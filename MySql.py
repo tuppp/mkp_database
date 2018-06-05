@@ -6,6 +6,7 @@ import csv
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import *
 import datetime
+import sys
 
 
 dbname = 'pyWetter'
@@ -98,6 +99,16 @@ def main():
     #Load_Data('C:\\Users\Vika\Documents\TU\ProgPraktikum\git\ssdasd.txt',se,'accuweathercom')
     bad_table = True
     websitename = null;
+
+    if (len(sys.argv)>1):
+        if (sys.argv[1] not in all_table_names):
+            print("Please enter a valid table name! (websites','testwebsite','accuweathercom','openweathermaporg','wettercom','wetterde','wetterdienstde)")
+            sys.exit()
+        try:
+            Load_Data(sys.argv[2], se, sys.argv[1])
+        except:
+            print("Please enter a valid file path!")
+            sys.exit()
 
     while(bad_table):
         websitename = input("Enter a table name: ")
