@@ -54,27 +54,32 @@ def getTempAvg(avgTemp, table, se, query=None):
 
 # hot days (x tempavg)
 def getTempAvgByDate(date, avgTemp, table, se):
-    result = []
-    for a in se.query(table).filter(table.c.measure_date == date).filter(table.c.average_temp >= avgTemp):
-        result.append(a)
-    return np.vstack(result)
+    if (query == None):
+        query = se.query(table).filter(table.c.measure_date == date).filter(table.c.average_temp >= avgTemp)
+        return query
+    else:
+        query = query.filter(table.c.measure_date == date).filter(table.c.average_temp >= avgTemp)
+        return query
 
 
 # a lot of rain
 def getPrecAvg(postcode, avgPrec, table, se):
-    result = []
-    for a in se.query(table).filter(table.c.postcode == postcode).filter(table.c.precipitation_amount >= avgPrec):
-        result.append(a)
-    return np.vstack(result)
+    if (query == None):
+        query = se.query(table).filter(table.c.postcode == postcode).filter(table.c.precipitation_amount >= avgPrec)
+        return query
+    else:
+        query = query.filter(table.c.postcode == postcode).filter(table.c.precipitation_amount >= avgPrec)
+        return query
 
 
 # look for precipitation type
 def getPrecType(postcode, precipitationType, table):
-    result = []
-    for a in se.query(table).filter(table.c.postcode == postcode).filter(
-            table.c.precipitation_type == precipitationType):
-        result.append(a)
-    return np.vstack(result)
+    if (query == None):
+        query = se.query(table).filter(table.c.postcode == postcode).filter(table.c.precipitation_type == precipitationType)
+        return query
+    else:
+        query = query.filter(table.c.postcode == postcode).filter(table.c.precipitation_type == precipitationType)
+        return query
 
 
 # look for date
