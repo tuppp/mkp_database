@@ -3,13 +3,7 @@ import sqlalchemy as sqla
 from sqlalchemy import *
 from sqlalchemy.ext.declarative import declarative_base
 
-
 # Functions
-#dada
-#dadweq
-#eqewqeq
-#eqweq
-#eqweq
 
 def getPostcodeFromTable(postcode, table, se):
     result = []
@@ -48,11 +42,6 @@ def getTempAvg(postcode, avgTemp, table, se):
     for a in se.query(table).filter(table.c.postcode == postcode).filter(table.c.average_temp >= avgTemp):
         result.append(a)
     return np.vstack(result)
-
-#
-#
-#TEST
-#
 
 # hot days (x tempavg)
 def getTempAvgByDate(date, avgTemp, table, se):
