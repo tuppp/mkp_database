@@ -24,7 +24,7 @@ class Website_Data():
     measure_date_prediction = Column(Integer, primary_key=True)  # TODO
     measure_date_prediction_hour = Column(Integer)
     postcode = Column(Integer)
-    city = Column(String(50))
+    city = Column(String(50), primary_key=True)
     temp = Column(Float)
     humidity_prob =Column(Float)
     precipitation_amount = Column(Float)
@@ -95,7 +95,7 @@ def main():
     se = Session()
 
     #TODO Pfad ändern
-    #Load_Data('C:\\Users\Vika\Documents\TU\ProgPraktikum\data.csv', engine,se)
+    #Load_Data('C:\\Users\Vika\Documents\TU\ProgPraktikum\git\ssdasd.txt',se,'accuweathercom')
     bad_table = True
     websitename = null;
 
@@ -160,9 +160,6 @@ def Load_Data_real(file_name,se,trennsymbol,klassname):
         for i in range(len(row)):
             if row[i] == "nan" or row[i] == "None" or row[i] == "":
                 row[i] = sqla.sql.null()
-            elif klassname != Dwd:
-                print(":)")
-                #row[i] = row[i][1:-1]
         if count > 0:
             if klassname == Dwd:
                 nrow = Dwd(**{
@@ -190,6 +187,9 @@ def Load_Data_real(file_name,se,trennsymbol,klassname):
                 se.add(nrow)
 
             else:
+                if count % 2 == 0:
+                    count = count +1
+                    continue
                 if count == 1:
                     wrow = Websites(**{
                         'websitename':row[0],
@@ -205,6 +205,7 @@ def Load_Data_real(file_name,se,trennsymbol,klassname):
                         print("°J°")
                 date,hour = unix_time_to_normal_time(row[1])
                 date_p,hour_p =unix_time_to_normal_time(row[2])
+
                 nrow = klassname(**{
                     'measure_date' :date,
                     'measure_date_hour': hour,
@@ -226,7 +227,6 @@ def Load_Data_real(file_name,se,trennsymbol,klassname):
                 })
 
                 se.add(nrow)
-
             try:
                  se.commit()
             except sqla.exc.IntegrityError:
