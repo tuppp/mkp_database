@@ -14,28 +14,31 @@ def getPostcodeFromTable(postcode, table, se, query=None):
         return query
 
 # rainy days
-def getRain(postcode, table, se):
-    result = []
-    for a in se.query(table).filter(table.c.postcode == postcode).filter(table.c.precipitation_type != "kein NS"):
-        result.append(a)
-    return np.vstack(result)
-
+def getRain(table, se, query=None):
+    if(query == None):
+        query = se.query(table).filter(table.c.precipitation_type != "kein NS")
+        return query
+    else:
+        query = query.filter(table.c.precipitation_type != "kein NS")
+        return query
 
 # sunny days (x sun hours)
-def getSunHours(postcode, sunHours, table, se):
-    result = []
-    for a in se.query(table).filter(table.c.postcode == postcode).filter(table.c.sun_hours >= sunHours):
-        result.append(a)
-    return np.vstack(result)
-
+def getSunHours(sunHours, table, se, query=None):
+    if(query == None):
+        query = se.query(table).filter(table.c.sun_hours == sunHours)
+        return query
+    else:
+        query = query.filter(table.c.sun_hours == sunHours)
+        return query
 
 # sunny days (x sun hours) by date
-def getSunHoursByDate(date, sunHours, table, se):
-    result = []
-    for a in se.query(table).filter(table.c.measure_date == date).filter(table.c.sun_hours >= sunHours):
-        result.append(a)
-    return np.vstack(result)
-
+def getSunHoursByDate(date, sunHours, table, se, query=None):
+    if(query == None):
+        query = se.query(table).filter(table.c.measure_date == date).filter(table.c.sun_hours == sunHours)
+        return query
+    else:
+        query = query.filter(table.c.measure_date == date).filter(table.c.sun_hours == sunHours)
+        return query
 
 # hot days (x tempavg)
 def getTempAvg(avgTemp, table, se,query=None):
@@ -138,7 +141,10 @@ def getResult(query):
     result = []
     for a in query:
         result.append(a)
-    return np.vstack(result)
+    if result == []:
+        return "Result was empty"
+    else:
+        return np.vstack(result)
 
 ####################################################
 
@@ -169,53 +175,33 @@ def main():
     print("Filter auf Postleitzahl danach auf avg_temp")
     print(getResult(getTempAvg(0,Dwd,se,getPostcodeFromTable(26197,Dwd,se))))
 
-    # call functions
-    result = getPostcodeFromTable(26197, Dwd, se)
-    print(result)
     print()
+    print("Postcode")
+    print(getResult(getPostcodeFromTable(26197,Dwd,se)))
 
-    print("Tage mit Niederschlag")
-    print(getRain(26197, Dwd, se))
     print()
+    print("Rain")
+    print(getResult(getRain(Dwd,se)))
 
-    print("Tage mit mindestens x Sonnenstunden")
-    print(getSunHours(26197, 12, Dwd, se))
     print()
+    print("SunHours")
+    print(getResult(getSunHours(12,Dwd,se)))
 
-    print("Orte mit mindestens x Sonnenstunden an bestimmten Tag")
-    print(getSunHoursByDate(20171014, 5, Dwd, se))
-
-    print("Tage mit mindestens x Grad Durschnittstemperatur")
-    print(getTempAvg(26197, 20, Dwd, se))
     print()
+    print("SunHoursByDate")
+    print(getResult(getSunHoursByDate(20170410,12,Dwd,se)))
 
-    print("Alle Ort mit mindestens x Grad Durschnittstemperatur an bestimmten Tag")
-    print(getTempAvgByDate(20170410, 5, Dwd, se))
     print()
+    print("TempAvg")
+    print(getResult(getTempAvg(22,Dwd,se)))
 
-    print("Tage mit mindestens x Niederschlagsmenge")
-    print(getPrecAvg(26197, 1.0, Dwd, se))
     print()
+    print("Postcode on Rain")
+    print(getResult(getRain(Dwd,se,getPostcodeFromTable(26197,Dwd,se))))
 
-    print("Nach Datum suchen")
-    print(getDate(20171013, Dwd, se))
     print()
-
-    print("Nach Datum und Postcode suchen")
-    print(getDateAndPostcode(26197, 20170512, Dwd, se))
-    print()
-
-    print("Nach snowHeight suchen")
-    print(getSnowHeight(26197, 0.1, Dwd, se))
-    print()
-
-    print("Nach maxTemp suchen")
-    print(getMaxTemp(26197, 25.0, Dwd, se))
-    print()
-
-    print("Nach minTemp suchen")
-    print(getMinTemp(26197, 5.0, Dwd, se))
-    print()
+    print("Postcode on SunHours on tempAvg")
+    print(getResult(getTempAvg(22,Dwd,se,getSunHours(12,Dwd,se,getPostcodeFromTable(26197,Dwd,se)))))
 
     se.close()
 
