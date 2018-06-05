@@ -18,15 +18,21 @@ def main():
         else:
             print(error)
     #CALL query
-    SQLpostcode(94501,connection)
+    test = SQLpostcode(94501,connection)
+    print(test)
+    print("")
+    print("")
+    print("Zeile")
+    print(test[0])
+    print("Spalte")
+    print(test[0][1])
     connection.close()
 
 def SQLpostcode(postcode,connection):
-    select = sqla.select([Database.Dwd]).where(Database.Dwd.postcode == postcode)
-    result = connection.execute(select)
-    print(type(result))
-    for row in result:
-        print(row)
+    result = []
+    for row in connection.execute(sqla.select([Database.Dwd]).where(Database.Dwd.postcode == postcode)):
+        result.append(row)
+    return np.vstack(result)
 
 if __name__ == '__main__':
     main()
