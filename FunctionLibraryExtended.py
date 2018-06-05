@@ -61,9 +61,9 @@ def getTempAvgByDate(date, avgTemp, table, se):
 
 
 # a lot of rain
-def getPrecAvg(postcode, avgPrec, table, se):
+def getMorePercipitation(columlist, postcode, number, table, se):
     result = []
-    for a in se.query(table).filter(table.c.postcode == postcode).filter(table.c.precipitation_amount >= avgPrec):
+    for a in se.query(*getColumnList(columlist, table, se)).filter(table.c.postcode == postcode).filter(table.c.precipitation_amount >= avgPrec):
         result.append(a)
     return np.vstack(result)
 
@@ -201,6 +201,16 @@ def getResult(query):
     else:
         return np.vstack(result)
 
+# convert a list of column name strings into parameters to call, if no columns given: return the whole table
+def getColumnList(columnlist, table, se):
+    if not columnlist:
+        return table
+    parameters = []
+    for col in columnlist:
+        parameters.append(getattr(table.c, col))
+    return parameters
+
+
 ####################################################
 
 def main():
@@ -259,6 +269,10 @@ def main():
     print("Postcode on SunHours on tempAvg")
     print(getResult(getTempAvg(22,Dwd,se,getSunHours(12,Dwd,se,getPostcodeFromTable(26197,Dwd,se)))))
 
+    print("Tage mit mindestens x Niederschlagsmenge")
+    print(getMorePercipitation(["station_id", "station_name", "postcode", "precipitation_amount"], 26197, 1.0, Dwd, se))
+    print()
+    
     se.close()
 
 
