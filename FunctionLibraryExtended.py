@@ -176,19 +176,19 @@ def getMinTempDown(minTemp, table, se, query=None):
 # look for coverage
 def getCoverageUp(coverage, table, se, query=None):
     if(query == None):
-        query = se.query(table).filter(table.c.coverage >= coverage)
+        query = se.query(table).filter(table.c.coverage_amount >= coverage)
         return query
     else:
-        query = query.filter(table.c.coverage >= coverage)
+        query = query.filter(table.c.coverage_amount >= coverage)
         return query
 
 
 def getCoverageDown(coverage, table, se, query=None):
     if(query == None):
-        query = se.query(table).filter(table.c.coverage <= coverage)
+        query = se.query(table).filter(table.c.coverage_amount <= coverage)
         return query
     else:
-        query = query.filter(table.c.coverage <= coverage)
+        query = query.filter(table.c.coverage_amount <= coverage)
         return query
 
 
