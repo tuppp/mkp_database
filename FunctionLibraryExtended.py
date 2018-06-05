@@ -5,12 +5,13 @@ from sqlalchemy.ext.declarative import declarative_base
 
 # Functions
 
-def getPostcodeFromTable(postcode, table, se):
-    result = []
-    for a in se.query(table).filter(table.c.postcode == postcode):
-        result.append(a)
-    return np.vstack(result)
-
+def getPostcodeFromTable(postcode, table, se, query=None):
+    if(query == None):
+        query = se.query(table).filter(table.c.postcode == postcode)
+        return query
+    else:
+        query = query.filter(table.c.postcode == postcode)
+        return query
 
 # rainy days
 def getRain(postcode, table, se):
@@ -37,11 +38,13 @@ def getSunHoursByDate(date, sunHours, table, se):
 
 
 # hot days (x tempavg)
-def getTempAvg(postcode, avgTemp, table, se):
-    result = []
-    for a in se.query(table).filter(table.c.postcode == postcode).filter(table.c.average_temp >= avgTemp):
-        result.append(a)
-    return np.vstack(result)
+def getTempAvg(avgTemp, table, se,query=None):
+    if(query == None):
+        query = se.query(table).filter(table.c.average_temp == avgTemp)
+        return query
+    else:
+        query = query.filter(table.c.average_temp == avgTemp)
+        return query
 
 # hot days (x tempavg)
 def getTempAvgByDate(date, avgTemp, table, se):
@@ -131,6 +134,11 @@ def getCoverage(postcode, coverage, table, se):
         result.append(a)
     return np.vstack(result)
 
+def getResult(query):
+    result = []
+    for a in query:
+        result.append(a)
+    return np.vstack(result)
 
 ####################################################
 
@@ -156,6 +164,10 @@ def main():
 
     # Get Table
     Dwd = metadata.tables['dwd']
+
+    #Test new functions
+    print("Filter auf Postleitzahl danach auf avg_temp")
+    print(getResult(getTempAvg(0,Dwd,se,getPostcodeFromTable(26197,Dwd,se))))
 
     # call functions
     result = getPostcodeFromTable(26197, Dwd, se)
