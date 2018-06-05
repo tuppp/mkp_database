@@ -44,9 +44,10 @@ def getTempAvg(postcode, avgTemp, table, se):
         result.append(a)
     return np.vstack(result)
 
+
 #
 #
-#TEST
+# TEST
 #
 
 # hot days (x tempavg)
@@ -144,75 +145,76 @@ def main():
     try:
         Base = declarative_base()
         engine = create_engine(
-                        'mysql+pymysql://dwdtestuser:asdassaj14123@weather.service.tu-berlin.de/dwdtest?use_unicode=1&charset=utf8&ssl_cipher=AES128-SHA')
-# mysql --ssl-cipher=AES128-SHA -u dwdtestuser -p -h weather.service.tu-berlin.de dwdtest
-# mysql --ssl -u dwdtestuser -p -h weather.service.tu-berlin.de dwdtest
-# password asdassaj14123
-# use dwdtest
-Base.metadata.create_all(engine)
-Session = sqla.orm.sessionmaker()
-Session.configure(bind=engine)
-se = Session()
-# connect to database
-metadata = MetaData(engine, reflect=True)
+            'mysql+pymysql://dwdtestuser:asdassaj14123@weather.service.tu-berlin.de/dwdtest?use_unicode=1&charset=utf8&ssl_cipher=AES128-SHA')
+        # mysql --ssl-cipher=AES128-SHA -u dwdtestuser -p -h weather.service.tu-berlin.de dwdtest
+        # mysql --ssl -u dwdtestuser -p -h weather.service.tu-berlin.de dwdtest
+        # password asdassaj14123
+        # use dwdtest
+        Base.metadata.create_all(engine)
+        Session = sqla.orm.sessionmaker()
+        Session.configure(bind=engine)
+        se = Session()
+        # connect to database
+        metadata = MetaData(engine, reflect=True)
+    except Exception as error:
+        if "Engine not found" in str(error):
+            print("Engine not found")
+        else:
+            print(error)
 
-# Get Table
-Dwd = metadata.tables['dwd']
+    # Get Table
+    Dwd = metadata.tables['dwd']
 
-# call functions
-result = getPostcodeFromTable(26197, Dwd, se)
-print(result)
-print()
+    # call functions
+    result = getPostcodeFromTable(26197, Dwd, se)
+    print(result)
+    print()
 
-print("Tage mit Niederschlag")
-print(getRain(26197, Dwd, se))
-print()
+    print("Tage mit Niederschlag")
+    print(getRain(26197, Dwd, se))
+    print()
 
-print("Tage mit mindestens x Sonnenstunden")
-print(getSunHours(26197, 12, Dwd, se))
-print()
+    print("Tage mit mindestens x Sonnenstunden")
+    print(getSunHours(26197, 12, Dwd, se))
+    print()
 
-print("Orte mit mindestens x Sonnenstunden an bestimmten Tag")
-print(getSunHoursByDate(20171014, 5, Dwd, se))
+    print("Orte mit mindestens x Sonnenstunden an bestimmten Tag")
+    print(getSunHoursByDate(20171014, 5, Dwd, se))
 
-print("Tage mit mindestens x Grad Durschnittstemperatur")
-print(getTempAvg(26197, 20, Dwd, se))
-print()
+    print("Tage mit mindestens x Grad Durschnittstemperatur")
+    print(getTempAvg(26197, 20, Dwd, se))
+    print()
 
-print("Alle Ort mit mindestens x Grad Durschnittstemperatur an bestimmten Tag")
-print(getTempAvgByDate(20170410, 5, Dwd, se))
-print()
+    print("Alle Ort mit mindestens x Grad Durschnittstemperatur an bestimmten Tag")
+    print(getTempAvgByDate(20170410, 5, Dwd, se))
+    print()
 
-print("Alle trockenen Tage")
-print(getPrecType("kein NS", Dwd, se))
-print()
+    print("Tage mit mindestens x Niederschlagsmenge")
+    print(getPrecAvg(26197, 1.0, Dwd, se))
+    print()
 
-print("Tage mit mindestens x Niederschlagsmenge")
-print(getPrecAvg(26197, 1.0, Dwd, se))
-print()
+    print("Nach Datum suchen")
+    print(getDate(20171013, Dwd, se))
+    print()
 
-print("Nach Datum suchen")
-print(getDate(20171013, Dwd, se))
-print()
+    print("Nach Datum und Postcode suchen")
+    print(getDateAndPostcode(26197, 20170512, Dwd, se))
+    print()
 
-print("Nach Datum und Postcode suchen")
-print(getDateAndPostcode(26197, 20170512, Dwd, se))
-print()
+    print("Nach snowHeight suchen")
+    print(getSnowHeight(26197, 0.1, Dwd, se))
+    print()
 
-print("Nach maxWind suchen")
-print(getMaxWind(26197, Dwd, se)
-print()
+    print("Nach maxTemp suchen")
+    print(getMaxTemp(26197, 25.0, Dwd, se))
+    print()
 
-print("Nach snowHeight suchen")
-print(getSnowHeight(26197, 0.1, Dwd, se))
-print()
+    print("Nach minTemp suchen")
+    print(getMinTemp(26197, 5.0, Dwd, se))
+    print()
 
-print("Nach maxTemp suchen")
-print(getMaxTemp(26197, 25.0, Dwd, se))
-print()
+    se.close()
 
-print("Nach minTemp suchen")
-print(getMinTemp(26197, 5.0, Dwd, se))
-print()
 
-se.close()
+if __name__ == '__main__':
+    main()
