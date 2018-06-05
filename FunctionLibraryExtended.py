@@ -3,15 +3,17 @@ import sqlalchemy as sqla
 from sqlalchemy import *
 from sqlalchemy.ext.declarative import declarative_base
 
+
 # Functions
 
 def getPostcodeFromTable(postcode, table, se, query=None):
-    if(query == None):
+    if (query == None):
         query = se.query(table).filter(table.c.postcode == postcode)
         return query
     else:
         query = query.filter(table.c.postcode == postcode)
         return query
+
 
 # rainy days
 def getRain(postcode, table, se):
@@ -38,13 +40,14 @@ def getSunHoursByDate(date, sunHours, table, se):
 
 
 # hot days (x tempavg)
-def getTempAvg(avgTemp, table, se,query=None):
-    if(query == None):
+def getTempAvg(avgTemp, table, se, query=None):
+    if (query == None):
         query = se.query(table).filter(table.c.average_temp == avgTemp)
         return query
     else:
         query = query.filter(table.c.average_temp == avgTemp)
         return query
+
 
 # hot days (x tempavg)
 def getTempAvgByDate(date, avgTemp, table, se):
@@ -72,35 +75,43 @@ def getPrecType(postcode, precipitationType, table):
 
 
 # look for date
-def getDate(date, table, se):
-    result = []
-    for a in se.query(table).filter(table.c.measure_date == date):
-        result.append(a)
-    return np.vstack(result)
+def getDate(date, table, se, query=None):
+    if query is None:
+        query = se.query(table).filter(table.c.measure_date == date)
+        return query
+    else:
+        query = query.filter(table.c.measure_date == date)
+        return query
 
 
 # look for date and postcode
-def getDateAndPostcode(postcode, date, table, se):
-    result = []
-    for a in se.query(table).filter(table.c.postcode == postcode).filter(table.c.measure_date == date):
-        result.append(a)
-    return np.vstack(result)
+def getDateAndPostcode(postcode, date, table, se, query=None):
+    if query is None:
+        query = se.query(table).filter(table.c.postcode == postcode).filter(table.c.measure_date == date)
+        return query
+    else:
+        query = query.filter(table.c.postcode == postcode).filter(table.c.measure_date == date)
+        return query
 
 
 # look for max wind
-def getMaxWind(postcode, maxWind, table, se):
-    result = []
-    for a in se.query(table).filter(table.c.postcode == postcode).filter(table.c.max_wind_speed >= maxWind):
-        result.append(a)
-    return np.vstack(result)
+def getMaxWind(postcode, maxWind, table, se, query=None):
+    if query is None:
+        query = se.query(table).filter(table.c.postcode == postcode).filter(table.c.max_wind_speed >= maxWind)
+        return query
+    else:
+        query = query.filter(table.c.postcode == postcode).filter(table.c.max_wind_speed >= maxWind)
+        return query
 
 
 # look for snow
-def getSnowHeight(postcode, snow, table, se):
-    result = []
-    for a in se.query(table).filter(table.c.postcode == postcode).filter(table.c.snow_height >= snow):
-        result.append(a)
-    return np.vstack(result)
+def getSnowHeight(postcode, snow, table, se, query=None):
+    if query is None:
+        query = se.query(table).filter(table.c.postcode == postcode).filter(table.c.snow_height >= snow)
+        return query
+    else:
+        query = query.filter(table.c.postcode == postcode).filter(table.c.snow_height >= snow)
+        return query
 
 
 # look for avg wind speed
@@ -134,6 +145,7 @@ def getCoverage(postcode, coverage, table, se):
         result.append(a)
     return np.vstack(result)
 
+
 def getResult(query):
     result = []
     for a in query:
@@ -145,7 +157,8 @@ def getResult(query):
 def main():
     try:
         Base = declarative_base()
-        engine = create_engine('mysql+pymysql://dwdtestuser:asdassaj14123@weather.service.tu-berlin.de/dwdtest?use_unicode=1&charset=utf8&ssl_cipher=AES128-SHA')
+        engine = create_engine(
+            'mysql+pymysql://dwdtestuser:asdassaj14123@weather.service.tu-berlin.de/dwdtest?use_unicode=1&charset=utf8&ssl_cipher=AES128-SHA')
         # mysql --ssl-cipher=AES128-SHA -u dwdtestuser -p -h weather.service.tu-berlin.de dwdtest
         # mysql --ssl -u dwdtestuser -p -h weather.service.tu-berlin.de dwdtest
         # password asdassaj14123
@@ -165,9 +178,9 @@ def main():
     # Get Table
     Dwd = metadata.tables['dwd']
 
-    #Test new functions
+    # Test new functions
     print("Filter auf Postleitzahl danach auf avg_temp")
-    print(getResult(getTempAvg(0,Dwd,se,getPostcodeFromTable(26197,Dwd,se))))
+    print(getResult(getTempAvg(0, Dwd, se, getPostcodeFromTable(26197, Dwd, se))))
 
     # call functions
     result = getPostcodeFromTable(26197, Dwd, se)
