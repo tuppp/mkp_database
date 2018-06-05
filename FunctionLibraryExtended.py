@@ -139,37 +139,37 @@ def getWindSpeedAvgDown(avgWindSpeed, table, se, query):
 # look for max temp
 def getMaxTempUp(maxTemp, table, se, query=None):
     if(query == None):
-        query = se.query(table).filter(table.c.maxTemp >= maxTemp)
+        query = se.query(table).filter(table.c.max_temp >= maxTemp)
         return query
     else:
-        query = query.filter(table.c.maxTemp >= maxTemp)
+        query = query.filter(table.c.max_temp >= maxTemp)
         return query
 
 
 def getMaxTempDown(maxTemp, table, se, query=None):
     if(query == None):
-        query = se.query(table).filter(table.c.maxTemp <= maxTemp)
+        query = se.query(table).filter(table.c.max_temp <= maxTemp)
         return query
     else:
-        query = query.filter(table.c.maxTemp <= maxTemp)
+        query = query.filter(table.c.max_temp <= maxTemp)
         return query
 
 
 # look for min # temp
 def getMinTempUp(minTemp, table, se, query=None):
     if(query == None):
-        query = se.query(table).filter(table.c.minTemp >= minTemp)
+        query = se.query(table).filter(table.c.min_temp >= minTemp)
         return query
     else:
-        query = query.filter(table.c.minTemp >= minTemp)
+        query = query.filter(table.c.min_temp >= minTemp)
         return query
 
 def getMinTempDown(minTemp, table, se, query=None):
     if(query == None):
-        query = se.query(table).filter(table.c.minTemp <= minTemp)
+        query = se.query(table).filter(table.c.min_temp <= minTemp)
         return query
     else:
-        query = query.filter(table.c.minTemp <= minTemp)
+        query = query.filter(table.c.min_temp <= minTemp)
         return query
 
 
@@ -227,7 +227,7 @@ def main():
     # Get Table
     Dwd = metadata.tables['dwd']
 
-    # Test new functions
+    # # Test new functions
     print("Filter auf Postleitzahl danach auf avg_temp")
     print(getResult(getTempAvg(0, Dwd, se, getPostcodeFromTable(26197, Dwd, se))))
 
@@ -260,6 +260,7 @@ def main():
     print(getResult(getTempAvg(22,Dwd,se,getSunHours(12,Dwd,se,getPostcodeFromTable(26197,Dwd,se)))))
 
     se.close()
+
 
 
 if __name__ == '__main__':
