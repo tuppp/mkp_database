@@ -211,6 +211,7 @@ def getSnowHeightUp(snow, table, se, query=None):
             return query
     else:
         print("No snowheigt available!")
+        return query
 
     #   if query is None:
     #       query = se.query(table).filter(table.c.precipitation_type == "snow").filter(table.c.precipitation_amount >= snow)
