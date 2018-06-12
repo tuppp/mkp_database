@@ -57,7 +57,6 @@ def getSunHours(sunHours, table, se, query=None):
         query = query.filter(table.c.sun_hours == sunHours)
         return query
 
-
 # hot days (x tempavg)
 def getTempAvg(avgTemp, table, se, query=None):
     r"""
@@ -74,7 +73,6 @@ def getTempAvg(avgTemp, table, se, query=None):
     else:
         query = query.filter(table.c.average_temp == avgTemp)
         return query
-
 
 # a lot of rain
 def getPrecAvg(avgPrec, table, se, query=None):
@@ -129,7 +127,6 @@ def getDate(date, table, se, query=None):
         query = query.filter(table.c.measure_date == date)
         return query
 
-
 # look for max wind >=
 def getMaxWindUp(maxWind, table, se, query=None):
     r"""
@@ -146,7 +143,6 @@ def getMaxWindUp(maxWind, table, se, query=None):
     else:
         query = query.filter(table.c.max_wind_speed >= maxWind)
         return query
-
 
 # look for snow height >=
 def getSnowHeightUp(snow, table, se, query=None):
@@ -165,7 +161,6 @@ def getSnowHeightUp(snow, table, se, query=None):
         query = query.filter(table.c.snow_height >= snow)
         return query
 
-
 # look for avg wind speed >=
 def getWindSpeedAvgUp(avgWindSpeed, table, se, query):
     r"""
@@ -183,7 +178,6 @@ def getWindSpeedAvgUp(avgWindSpeed, table, se, query):
         query = query.filter(table.c.average_wind_speed >= avgWindSpeed)
         return query
 
-
 def getWindSpeedAvgDown(avgWindSpeed, table, se, query):
     r"""
     get all data from table with average_wind_speed <= given value
@@ -199,7 +193,6 @@ def getWindSpeedAvgDown(avgWindSpeed, table, se, query):
     else:
         query = query.filter(table.c.average_wind_speed <= avgWindSpeed)
         return query
-
 
 # look for max temp
 def getMaxTempUp(maxTemp, table, se, query=None):
@@ -218,25 +211,38 @@ def getMaxTempUp(maxTemp, table, se, query=None):
         query = query.filter(table.c.max_temp >= maxTemp)
         return query
 
-
 def getMaxTempDown(maxTemp, table, se, query=None):
-    if (query == None):
+    r"""
+    get all data from table with max_temp <= given value
+    :param maxTemp: max_temp value
+    :param table: which weather table is going to be used
+    :param se: Session Object containing connection information
+    :param query: Query Object which contains SQL query, if empty one will be created
+    :returns: Query Object, can be reused for other queries
+    """
+    if(query == None):
         query = se.query(table).filter(table.c.max_temp <= maxTemp)
         return query
     else:
         query = query.filter(table.c.max_temp <= maxTemp)
         return query
 
-
 # look for min # temp
 def getMinTempUp(minTemp, table, se, query=None):
-    if (query == None):
+    r"""
+    Returns table Data for the given Temperature upwards
+    :param minTemp: Temperature to sort downwards (>=)
+    :param table: which weather table is going to be used
+    :param se: Session Object containing connection information
+    :param query: Query Object which contains SQL query, if empty one will be created
+    :return: Query Object, can be reused for other queries
+    """
+    if(query == None):
         query = se.query(table).filter(table.c.min_temp >= minTemp)
         return query
     else:
         query = query.filter(table.c.min_temp >= minTemp)
         return query
-
 
 def getMinTempDown(minTemp, table, se, query=None):
     r"""
@@ -255,7 +261,6 @@ def getMinTempDown(minTemp, table, se, query=None):
         query = query.filter(table.c.min_temp <= minTemp)
         return query
 
-
 # look for coverage
 def getCoverageUp(coverage, table, se, query=None):
     r"""
@@ -273,7 +278,6 @@ def getCoverageUp(coverage, table, se, query=None):
     else:
         query = query.filter(table.c.coverage_amount >= coverage)
         return query
-
 
 def getCoverageDown(coverage, table, se, query=None):
     r"""
@@ -298,21 +302,21 @@ def getCoverageDown(coverage, table, se, query=None):
 # Eg: se.query(*getColumnList(columlist, table, se)).filter(table.c.postcode == postcode)
 def getColumnList(columnlist, table, se):
     r"""
-    convert a list of column name strings into parameters to call, if no columns given: return the whole table
-    Eg: se.query(*getColumnList(columlist, table, se)).filter(table.c.postcode == postcode)
+    if columnlist is not specified: query on the whole table,
+    else: only display given columns
+    <!> Must be called before calling other queries
 
-    :param columnlist:  No Idea ask Haphuong
+    :param columnlist:  list of column names that should be displayed, eg: ["station_id", "station_name", "postcode", "precipitation_amount"]
     :param table: which weather table is going to be used
     :param se: Session Object containing connection information
-    :param query: No Idea ask Haphuong
-    :return: No Idea ask Haphuong
+    :returns: Query Object, can be reused for other queries
     """
     if not columnlist:
-        return table
+        return se.query(table)
     parameters = []
     for col in columnlist:
         parameters.append(getattr(table.c, col))
-    return parameters
+    return se.query(*parameters)
 
 
 # Finish query and return
@@ -335,8 +339,7 @@ def getResult(query, se):
         se.close()
         return np.vstack(result)
 
-
-# Setup Data
+#Setup Data
 def getConnectionData(tablename):
     try:
         Base = declarative_base()
@@ -362,34 +365,26 @@ def getConnectionData(tablename):
 
     return (table, se)
 
-
 def getConnectionDWD():
     return getConnectionData('dwd')
-
 
 def getConnectionWetterdienstde():
     return getConnectionData('wetterdienstde')
 
-
 def getConnectionWetterde():
     return getConnectionData('wetterde')
-
 
 def getConnectionWettercom():
     return getConnectionData('wettercom')
 
-
 def getConnectionOpenWeatherMaporg():
     return getConnectionData('openweathermaporg')
-
 
 def getConnectionAccuweathercom():
     return getConnectionData('accuweathercom')
 
-
 def getConnectionTest():
     return getConnectionData('testwebsite')
-
 
 ####################################################
 
@@ -426,7 +421,6 @@ def main():
     print()
     print("Postcode on SunHours on tempAvg")
     print(getResult(getTempAvg(22, Dwd, se, getSunHours(12, Dwd, se, getPostcode(26197, Dwd, se))), se))
-
 
 if __name__ == '__main__':
     main()
