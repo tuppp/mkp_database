@@ -252,7 +252,7 @@ def getColumnList(columnlist, table, se):
     :returns: Query Object, can be reused for other queries
     """
     if not columnlist:
-        return table
+        return se.query(table)
     parameters = []
     for col in columnlist:
         parameters.append(getattr(table.c, col))
