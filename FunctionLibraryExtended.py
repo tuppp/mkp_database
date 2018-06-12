@@ -154,14 +154,19 @@ def getCoverageDown(coverage, table, se, query=None):
         return query
     else:
         query = query.filter(table.c.coverage_amount <= coverage)
+
         return query
 
 #Finish query and return
 ########################
 #Session close hier!?###
 ########################
-
 def getResult(query,se):
+    r"""
+    :param query: Query Object which contains the SQL command
+    :param se: Session Object containing the connection information
+    :returns: NumpyArray containing all information
+    """
     result = []
     for a in query:
         result.append(a)
@@ -175,6 +180,7 @@ def getResult(query,se):
 #Setup Data
 def getConnectionData(UseDwd = bool):
     try:
+        getResult()
         Base = declarative_base()
         engine = create_engine(
             'mysql+pymysql://dwdtestuser:asdassaj14123@weather.service.tu-berlin.de/dwdtest?use_unicode=1&charset=utf8&ssl_cipher=AES128-SHA')
@@ -195,7 +201,7 @@ def getConnectionData(UseDwd = bool):
             print(error)
     # Get Table
     if(UseDwd):
-        Dwd = metadata.tables['dwd']
+        Dwd = 'dwd'
     else:
         Dwd = metadata.tables['web']
     return (Dwd,se)
