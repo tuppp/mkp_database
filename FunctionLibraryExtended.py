@@ -161,6 +161,20 @@ def getCoverageDown(coverage, table, se, query=None):
 ########################
 #Session close hier!?###
 ########################
+<<<<<<< HEAD
+=======
+
+# convert a list of column name strings into parameters to call, if no columns given: return the whole table
+# Eg: se.query(*getColumnList(columlist, table, se)).filter(table.c.postcode == postcode)
+def getColumnList(columnlist, table, se):
+    if not columnlist:
+        return table
+    parameters = []
+    for col in columnlist:
+        parameters.append(getattr(table.c, col))
+    return parameters
+
+>>>>>>> 58ab718ea3379322587fdae262c7611924af0591
 def getResult(query,se):
     r"""
     :param query: Query Object which contains the SQL command
