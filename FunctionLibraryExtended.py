@@ -315,14 +315,10 @@ def getConnectionTest():
 ####################################################
 
 def main():
-<<<<<<< HEAD
     r"""
     TESTFUNCTION DO NOT USE
     """
-    Dwd,se = getConnectionData(true)
-=======
     Dwd,se = getConnectionDWD()
->>>>>>> aec4c98d5d5aeede0297d0ecce8f727920f93f18
 
     # # Test new functions
     print("Filter auf Postleitzahl danach auf avg_temp")
