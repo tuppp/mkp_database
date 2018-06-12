@@ -7,6 +7,14 @@ from sqlalchemy.ext.declarative import declarative_base
 # Functions
 
 def getPostcode(postcode, table, se, query=None):
+    r"""
+    Method gets all entries with given postcode
+    :param postcode: desired postcode
+    :param table: which weather table is going to be used
+    :param se: Session Object containing connection information
+    :param query: Query Object which contains SQL query, if empty one will be created
+    :returns: Query Object, can be reused for other queries
+    """
     if (query == None):
         query = se.query(table).filter(table.c.postcode == postcode)
         return query
@@ -14,18 +22,35 @@ def getPostcode(postcode, table, se, query=None):
         query = query.filter(table.c.postcode == postcode)
         return query
 
+
 # rainy days
 def getRain(table, se, query=None):
-    if(query == None):
+    r"""
+        Returns rain information
+       :param table: which weather table is going to be used
+       :param se: Session Object containing connection information
+       :param query: Query Object which contains SQL query, if empty one will be created
+       :returns: Query Object, can be reused for other queries
+       """
+    if (query == None):
         query = se.query(table).filter(table.c.precipitation_type != "kein NS")
         return query
     else:
         query = query.filter(table.c.precipitation_type != "kein NS")
         return query
 
+
 # sunny days (x sun hours)
 def getSunHours(sunHours, table, se, query=None):
-    if(query == None):
+    r"""
+       Method gets all entries which matching amount of sun
+       :param sunHours: desired sunhours
+       :param table: which weather table is going to be used
+       :param se: Session Object containing connection information
+       :param query: Query Object which contains SQL query, if empty one will be created
+       :returns: Query Object, can be reused for other queries
+       """
+    if (query == None):
         query = se.query(table).filter(table.c.sun_hours == sunHours)
         return query
     else:
@@ -34,6 +59,14 @@ def getSunHours(sunHours, table, se, query=None):
 
 # hot days (x tempavg)
 def getTempAvg(avgTemp, table, se, query=None):
+    r"""
+       Method gets all entries which desired average temperature
+       :param avgTemp: desired average temperature
+       :param table: which weather table is going to be used
+       :param se: Session Object containing connection information
+       :param query: Query Object which contains SQL query, if empty one will be created
+       :returns: Query Object, can be reused for other queries
+       """
     if (query == None):
         query = se.query(table).filter(table.c.average_temp == avgTemp)
         return query
@@ -42,7 +75,15 @@ def getTempAvg(avgTemp, table, se, query=None):
         return query
 
 # a lot of rain
-def getPrecAvg(avgPrec, table, se, query= None):
+def getPrecAvg(avgPrec, table, se, query=None):
+    r"""
+       Method gets all entries with average precipitation higher than/equal to input average precipitation
+       :param avgPrec: desired average temperature
+       :param table: which weather table is going to be used
+       :param se: Session Object containing connection information
+       :param query: Query Object which contains SQL query, if empty one will be created
+       :returns: Query Object, can be reused for other queries
+       """
     if (query == None):
         query = se.query(table).filter(table.c.precipitation_amount >= avgPrec)
         return query
@@ -53,6 +94,14 @@ def getPrecAvg(avgPrec, table, se, query= None):
 
 # look for precipitation type
 def getPrecType(precipitationType, table, se, query=None):
+    r"""
+       Method gets all entries with given pecipitation type
+       :param precipitationType: desired pecipitation type
+       :param table: which weather table is going to be used
+       :param se: Session Object containing connection information
+       :param query: Query Object which contains SQL query, if empty one will be created
+       :returns: Query Object, can be reused for other queries
+       """
     if (query == None):
         query = se.query(table).filter(table.c.precipitation_type == precipitationType)
         return query
@@ -63,6 +112,14 @@ def getPrecType(precipitationType, table, se, query=None):
 
 # look for date
 def getDate(date, table, se, query=None):
+    r"""
+       Method gets all entries with given date
+       :param postcode: date YYYYMMDD (e.g. 20170512)c
+       :param table: which weather table is going to be used
+       :param se: Session Object containing connection information
+       :param query: Query Object which contains SQL query, if empty one will be created
+       :returns: Query Object, can be reused for other queries
+       """
     if query is None:
         query = se.query(table).filter(table.c.measure_date == date)
         return query
@@ -114,7 +171,7 @@ def getWindSpeedAvgUp(avgWindSpeed, table, se, query):
     :param query: Query Object which contains SQL query, if empty one will be created
     :returns: Query Object, can be reused for other queries
     """
-    if(query == None):
+    if (query == None):
         query = se.query(table).filter(table.c.average_wind_speed >= avgWindSpeed)
         return query
     else:
@@ -130,7 +187,7 @@ def getWindSpeedAvgDown(avgWindSpeed, table, se, query):
     :param query: Query Object which contains SQL query, if empty one will be created
     :returns: Query Object, can be reused for other queries
     """
-    if(query == None):
+    if (query == None):
         query = se.query(table).filter(table.c.average_wind_speed <= avgWindSpeed)
         return query
     else:
@@ -161,7 +218,7 @@ def getMaxTempUp(maxTemp, table, se, query=None):
     :param query: Query Object which contains SQL query, if empty one will be created
     :returns: Query Object, can be reused for other queries
     """
-    if(query == None):
+    if (query == None):
         query = se.query(table).filter(table.c.max_temp >= maxTemp)
         return query
     else:
@@ -211,7 +268,7 @@ def getMinTempDown(minTemp, table, se, query=None):
     :param query: Query Object which contains SQL query, if empty one will be created
     :returns: Query Object, can be reused for other queries
     """
-    if(query == None):
+    if (query == None):
         query = se.query(table).filter(table.c.min_temp <= minTemp)
         return query
     else:
@@ -229,7 +286,7 @@ def getCoverageUp(coverage, table, se, query=None):
     :param query: Query Object which contains SQL query, if empty one will be created
     :returns: Query Object, can be reused for other queries
     """
-    if(query == None):
+    if (query == None):
         query = se.query(table).filter(table.c.coverage_amount >= coverage)
         return query
     else:
@@ -246,7 +303,7 @@ def getCoverageDown(coverage, table, se, query=None):
     :param query: Query Object which contains SQL query, if empty one will be created
     :returns: Query Object, can be reused for other queries
     """
-    if(query == None):
+    if (query == None):
         query = se.query(table).filter(table.c.coverage_amount <= coverage)
         return query
     else:
@@ -255,6 +312,7 @@ def getCoverageDown(coverage, table, se, query=None):
         return query
 
 
+<<<<<<< HEAD
 def getMaxTemp(table, se, query=None):
     r"""
     Returns table Data for the given Coverage downwards
@@ -270,6 +328,10 @@ def getMaxTemp(table, se, query=None):
     else:
         return query.
 
+=======
+# convert a list of column name strings into parameters to call, if no columns given: return the whole table
+# Eg: se.query(*getColumnList(columlist, table, se)).filter(table.c.postcode == postcode)
+>>>>>>> 1e0b0d69a2dbe22781695a037411395f34c8d1fc
 def getColumnList(columnlist, table, se):
     r"""
     if columnlist is not specified: query on the whole table,
@@ -288,11 +350,12 @@ def getColumnList(columnlist, table, se):
         parameters.append(getattr(table.c, col))
     return se.query(*parameters)
 
-#Finish query and return
+
+# Finish query and return
 ########################
-#Session close hier!?###
+# Session close hier!?###
 ########################
-def getResult(query,se):
+def getResult(query, se):
     r"""
     :param query: Query Object which contains SQL query
     :param se: Session Object containing the connection information
@@ -332,7 +395,7 @@ def getConnectionData(tablename):
     # Get Table
     table = metadata.tables[tablename]
 
-    return (table,se)
+    return (table, se)
 
 def getConnectionDWD():
     return getConnectionData('dwd')
@@ -361,35 +424,35 @@ def main():
     r"""
     TESTFUNCTION DO NOT USE
     """
-    Dwd,se = getConnectionDWD()
+    Dwd, se = getConnectionAccuweathercom()
 
     # # Test new functions
     print("Filter auf Postleitzahl danach auf avg_temp")
-    print(getResult(getTempAvg(0, Dwd, se, getPostcode(26197, Dwd, se)),se))
+    print(getResult(getTempAvg(0, Dwd, se, getPostcode(26197, Dwd, se)), se))
 
     print()
     print("Postcode")
-    print(getResult(getPostcode(26197,Dwd,se),se))
+    print(getResult(getPostcode(26197, Dwd, se), se))
 
     print()
     print("Rain")
-    print(getResult(getRain(Dwd,se),se))
+    print(getResult(getRain(Dwd, se), se))
 
     print()
     print("SunHours")
-    print(getResult(getSunHours(12,Dwd,se),se))
+    print(getResult(getSunHours(12, Dwd, se), se))
 
     print()
     print("TempAvg")
-    print(getResult(getTempAvg(22,Dwd,se),se))
+    print(getResult(getTempAvg(22, Dwd, se), se))
 
     print()
     print("Postcode on Rain")
-    print(getResult(getRain(Dwd,se,getPostcode(26197,Dwd,se)),se))
+    print(getResult(getRain(Dwd, se, getPostcode(26197, Dwd, se)), se))
 
     print()
     print("Postcode on SunHours on tempAvg")
-    print(getResult(getTempAvg(22,Dwd,se,getSunHours(12,Dwd,se,getPostcode(26197,Dwd,se))),se))
+    print(getResult(getTempAvg(22, Dwd, se, getSunHours(12, Dwd, se, getPostcode(26197, Dwd, se))), se))
 
 if __name__ == '__main__':
     main()
