@@ -155,6 +155,14 @@ def getMaxTempUp(maxTemp, table, se, query=None):
         return query
 
 def getMaxTempDown(maxTemp, table, se, query=None):
+    r"""
+    get all data from table with max_temp <= given value
+    :param maxTemp: max_temp value
+    :param table: which weather table is going to be used
+    :param se: Session Object containing connection information
+    :param query: Query Object which contains SQL query, if empty one will be created
+    :returns: Query Object, can be reused for other queries
+    """
     if(query == None):
         query = se.query(table).filter(table.c.max_temp <= maxTemp)
         return query
@@ -164,6 +172,14 @@ def getMaxTempDown(maxTemp, table, se, query=None):
 
 # look for min # temp
 def getMinTempUp(minTemp, table, se, query=None):
+    r"""
+    Returns table Data for the given Temperature upwards
+    :param minTemp: Temperature to sort downwards (>=)
+    :param table: which weather table is going to be used
+    :param se: Session Object containing connection information
+    :param query: Query Object which contains SQL query, if empty one will be created
+    :return: Query Object, can be reused for other queries
+    """
     if(query == None):
         query = se.query(table).filter(table.c.min_temp >= minTemp)
         return query
