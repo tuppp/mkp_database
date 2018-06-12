@@ -211,7 +211,7 @@ def getConnectionData(UseDwd = bool):
             print(error)
     # Get Table
     if(UseDwd):
-        Dwd = 'dwd'
+        Dwd = metadata.tables['dwd']
     else:
         Dwd = metadata.tables['web']
     return (Dwd,se)
