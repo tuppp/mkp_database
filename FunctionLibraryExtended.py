@@ -70,8 +70,16 @@ def getDate(date, table, se, query=None):
         query = query.filter(table.c.measure_date == date)
         return query
 
-# look for max wind
-def getMaxWind(maxWind, table, se, query=None):
+# look for max wind >=
+def getMaxWindUp(maxWind, table, se, query=None):
+    r"""
+    get all data from table with max_wind_speed >= given value
+    :param maxWind: max_wind_speed value
+    :param table: which weather table is going to be used
+    :param se: Session Object containing connection information
+    :param query: Query Object which contains SQL query, if empty one will be created
+    :returns: Query Object, can be reused for other queries
+    """
     if query is None:
         query = se.query(table).filter(table.c.max_wind_speed >= maxWind)
         return query
@@ -79,8 +87,16 @@ def getMaxWind(maxWind, table, se, query=None):
         query = query.filter(table.c.max_wind_speed >= maxWind)
         return query
 
-# look for snow
-def getSnowHeight(snow, table, se, query=None):
+# look for snow height >=
+def getSnowHeightUp(snow, table, se, query=None):
+    r"""
+    get all data from table with snow_height >= given value
+    :param snow: snow_height value
+    :param table: which weather table is going to be used
+    :param se: Session Object containing connection information
+    :param query: Query Object which contains SQL query, if empty one will be created
+    :returns: Query Object, can be reused for other queries
+    """
     if query is None:
         query = se.query(table).filter(table.c.snow_height >= snow)
         return query
@@ -88,8 +104,16 @@ def getSnowHeight(snow, table, se, query=None):
         query = query.filter(table.c.snow_height >= snow)
         return query
 
-# look for avg wind speed
+# look for avg wind speed >=
 def getWindSpeedAvgUp(avgWindSpeed, table, se, query):
+    r"""
+    get all data from table with average_wind_speed >= given value
+    :param avgWindSpeed: average_wind_speed value
+    :param table: which weather table is going to be used
+    :param se: Session Object containing connection information
+    :param query: Query Object which contains SQL query, if empty one will be created
+    :returns: Query Object, can be reused for other queries
+    """
     if(query == None):
         query = se.query(table).filter(table.c.average_wind_speed >= avgWindSpeed)
         return query
@@ -98,6 +122,14 @@ def getWindSpeedAvgUp(avgWindSpeed, table, se, query):
         return query
 
 def getWindSpeedAvgDown(avgWindSpeed, table, se, query):
+    r"""
+    get all data from table with average_wind_speed <= given value
+    :param avgWindSpeed: average_wind_speed value
+    :param table: which weather table is going to be used
+    :param se: Session Object containing connection information
+    :param query: Query Object which contains SQL query, if empty one will be created
+    :returns: Query Object, can be reused for other queries
+    """
     if(query == None):
         query = se.query(table).filter(table.c.average_wind_speed <= avgWindSpeed)
         return query
@@ -107,6 +139,14 @@ def getWindSpeedAvgDown(avgWindSpeed, table, se, query):
 
 # look for max temp
 def getMaxTempUp(maxTemp, table, se, query=None):
+    r"""
+    get all data from table with max_temp >= given value
+    :param maxTemp: max_temp value
+    :param table: which weather table is going to be used
+    :param se: Session Object containing connection information
+    :param query: Query Object which contains SQL query, if empty one will be created
+    :returns: Query Object, can be reused for other queries
+    """
     if(query == None):
         query = se.query(table).filter(table.c.max_temp >= maxTemp)
         return query
@@ -132,6 +172,15 @@ def getMinTempUp(minTemp, table, se, query=None):
         return query
 
 def getMinTempDown(minTemp, table, se, query=None):
+    r"""
+    Returns table Data for the given Temperature downwards
+
+    :param minTemp: Temperature to sort downwards (<=)
+    :param table: which weather table is going to be used
+    :param se: Session Object containing connection information
+    :param query: Query Object which contains SQL query, if empty one will be created
+    :return: Query Object, can be reused for other queries
+    """
     if(query == None):
         query = se.query(table).filter(table.c.min_temp <= minTemp)
         return query
@@ -141,6 +190,15 @@ def getMinTempDown(minTemp, table, se, query=None):
 
 # look for coverage
 def getCoverageUp(coverage, table, se, query=None):
+    r"""
+    Returns table Data for the given Coverage upwards
+
+    :param coverage: Coverage to sort upwards (>=)
+    :param table: which weather table is going to be used
+    :param se: Session Object containing connection information
+    :param query: Query Object which contains SQL query, if empty one will be created
+    :return: Query Object, can be reused for other queries
+    """
     if(query == None):
         query = se.query(table).filter(table.c.coverage_amount >= coverage)
         return query
@@ -149,21 +207,36 @@ def getCoverageUp(coverage, table, se, query=None):
         return query
 
 def getCoverageDown(coverage, table, se, query=None):
+    r"""
+    Returns table Data for the given Coverage downwards
+
+    :param coverage: Coverage to sort downwards (<=)
+    :param table: which weather table is going to be used
+    :param se: Session Object containing connection information
+    :param query: Query Object which contains SQL query, if empty one will be created
+    :return: Query Object, can be reused for other queries
+    """
     if(query == None):
         query = se.query(table).filter(table.c.coverage_amount <= coverage)
         return query
     else:
         query = query.filter(table.c.coverage_amount <= coverage)
-        return query
 
-#Finish query and return
-########################
-#Session close hier!?###
-########################
+        return query
 
 # convert a list of column name strings into parameters to call, if no columns given: return the whole table
 # Eg: se.query(*getColumnList(columlist, table, se)).filter(table.c.postcode == postcode)
 def getColumnList(columnlist, table, se):
+    r"""
+    convert a list of column name strings into parameters to call, if no columns given: return the whole table
+    Eg: se.query(*getColumnList(columlist, table, se)).filter(table.c.postcode == postcode)
+
+    :param columnlist:  No Idea ask Haphuong
+    :param table: which weather table is going to be used
+    :param se: Session Object containing connection information
+    :param query: No Idea ask Haphuong
+    :return: No Idea ask Haphuong
+    """
     if not columnlist:
         return table
     parameters = []
@@ -171,7 +244,16 @@ def getColumnList(columnlist, table, se):
         parameters.append(getattr(table.c, col))
     return parameters
 
+#Finish query and return
+########################
+#Session close hier!?###
+########################
 def getResult(query,se):
+    r"""
+    :param query: Query Object which contains SQL query
+    :param se: Session Object containing the connection information
+    :returns: NumpyArray containing all information
+    """
     result = []
     for a in query:
         result.append(a)
@@ -183,8 +265,9 @@ def getResult(query,se):
         return np.vstack(result)
 
 #Setup Data
-def getConnectionData(UseDwd = bool):
+def getConnectionData(tablename):
     try:
+        getResult()
         Base = declarative_base()
         engine = create_engine(
             'mysql+pymysql://dwdtestuser:asdassaj14123@weather.service.tu-berlin.de/dwdtest?use_unicode=1&charset=utf8&ssl_cipher=AES128-SHA')
@@ -204,16 +287,38 @@ def getConnectionData(UseDwd = bool):
         else:
             print(error)
     # Get Table
-    if(UseDwd):
-        Dwd = metadata.tables['dwd']
-    else:
-        Dwd = metadata.tables['web']
-    return (Dwd,se)
+    table = metadata.tables[tablename]
+
+    return (table,se)
+
+def getConnectionDWD():
+    return getConnectionData('dwd')
+
+def getConnectionWetterdienstde():
+    return getConnectionData('wetterdienstde')
+
+def getConnectionWetterde():
+    return getConnectionData('wetterde')
+
+def getConnectionWettercom():
+    return getConnectionData('wettercom')
+
+def getConnectionOpenWeatherMaporg():
+    return getConnectionData('openweathermaporg')
+
+def getConnectionAccuweathercom():
+    return getConnectionData('accuweathercom')
+
+def getConnectionTest():
+    return getConnectionData('testwebsite')
 
 ####################################################
 
 def main():
-    Dwd,se = getConnectionData(true)
+    r"""
+    TESTFUNCTION DO NOT USE
+    """
+    Dwd,se = getConnectionDWD()
 
     # # Test new functions
     print("Filter auf Postleitzahl danach auf avg_temp")
