@@ -188,6 +188,15 @@ def getMinTempUp(minTemp, table, se, query=None):
         return query
 
 def getMinTempDown(minTemp, table, se, query=None):
+    r"""
+    Returns table Data for the given Temperature downwards
+
+    :param minTemp: Temperature to sort downwards (<=)
+    :param table: which weather table is going to be used
+    :param se: Session Object containing connection information
+    :param query: Query Object which contains SQL query, if empty one will be created
+    :return: Query Object, can be reused for other queries
+    """
     if(query == None):
         query = se.query(table).filter(table.c.min_temp <= minTemp)
         return query
@@ -197,6 +206,15 @@ def getMinTempDown(minTemp, table, se, query=None):
 
 # look for coverage
 def getCoverageUp(coverage, table, se, query=None):
+    r"""
+    Returns table Data for the given Coverage upwards
+
+    :param coverage: Coverage to sort upwards (>=)
+    :param table: which weather table is going to be used
+    :param se: Session Object containing connection information
+    :param query: Query Object which contains SQL query, if empty one will be created
+    :return: Query Object, can be reused for other queries
+    """
     if(query == None):
         query = se.query(table).filter(table.c.coverage_amount >= coverage)
         return query
@@ -205,6 +223,15 @@ def getCoverageUp(coverage, table, se, query=None):
         return query
 
 def getCoverageDown(coverage, table, se, query=None):
+    r"""
+    Returns table Data for the given Coverage downwards
+
+    :param coverage: Coverage to sort downwards (<=)
+    :param table: which weather table is going to be used
+    :param se: Session Object containing connection information
+    :param query: Query Object which contains SQL query, if empty one will be created
+    :return: Query Object, can be reused for other queries
+    """
     if(query == None):
         query = se.query(table).filter(table.c.coverage_amount <= coverage)
         return query
@@ -216,6 +243,16 @@ def getCoverageDown(coverage, table, se, query=None):
 # convert a list of column name strings into parameters to call, if no columns given: return the whole table
 # Eg: se.query(*getColumnList(columlist, table, se)).filter(table.c.postcode == postcode)
 def getColumnList(columnlist, table, se):
+    r"""
+    convert a list of column name strings into parameters to call, if no columns given: return the whole table
+    Eg: se.query(*getColumnList(columlist, table, se)).filter(table.c.postcode == postcode)
+
+    :param columnlist:  No Idea ask Haphuong
+    :param table: which weather table is going to be used
+    :param se: Session Object containing connection information
+    :param query: No Idea ask Haphuong
+    :return: No Idea ask Haphuong
+    """
     if not columnlist:
         return table
     parameters = []
@@ -229,7 +266,7 @@ def getColumnList(columnlist, table, se):
 ########################
 def getResult(query,se):
     r"""
-    :param query: Query Object which contains the SQL command
+    :param query: Query Object which contains SQL query
     :param se: Session Object containing the connection information
     :returns: NumpyArray containing all information
     """
@@ -246,7 +283,6 @@ def getResult(query,se):
 #Setup Data
 def getConnectionData(tablename):
     try:
-        getResult()
         Base = declarative_base()
         engine = create_engine(
             'mysql+pymysql://dwdtestuser:asdassaj14123@weather.service.tu-berlin.de/dwdtest?use_unicode=1&charset=utf8&ssl_cipher=AES128-SHA')
@@ -294,6 +330,9 @@ def getConnectionTest():
 ####################################################
 
 def main():
+    r"""
+    TESTFUNCTION DO NOT USE
+    """
     Dwd,se = getConnectionDWD()
 
     # # Test new functions
