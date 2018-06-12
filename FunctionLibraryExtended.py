@@ -240,25 +240,23 @@ def getCoverageDown(coverage, table, se, query=None):
 
         return query
 
-# convert a list of column name strings into parameters to call, if no columns given: return the whole table
-# Eg: se.query(*getColumnList(columlist, table, se)).filter(table.c.postcode == postcode)
 def getColumnList(columnlist, table, se):
     r"""
-    convert a list of column name strings into parameters to call, if no columns given: return the whole table
-    Eg: se.query(*getColumnList(columlist, table, se)).filter(table.c.postcode == postcode)
+    if columnlist is not specified: query on the whole table,
+    else: only display given columns
+    <!> Must be called before calling other queries
 
-    :param columnlist:  No Idea ask Haphuong
+    :param columnlist:  list of column names that should be displayed, eg: ["station_id", "station_name", "postcode", "precipitation_amount"]
     :param table: which weather table is going to be used
     :param se: Session Object containing connection information
-    :param query: No Idea ask Haphuong
-    :return: No Idea ask Haphuong
+    :returns: Query Object, can be reused for other queries
     """
     if not columnlist:
         return table
     parameters = []
     for col in columnlist:
         parameters.append(getattr(table.c, col))
-    return parameters
+    return se.query(*parameters)
 
 #Finish query and return
 ########################
