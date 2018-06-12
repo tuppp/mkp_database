@@ -6,12 +6,13 @@ import csv
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import *
 import datetime
+import sys
 
 
 dbname = 'pyWetter'
 newDB = True
 Base = declarative_base()
-all_table_names = {'websites','testwebsite','accuweathercom','openweathermaporg','wettercom','wetterde','wetterdienstde'}
+all_table_names = {'websites','testwebsite','accuweathercom','openweathermaporg','wettercom','wetterde','wetterdienstde','dwd'}
 
 class Websites(Base):
     __tablename__ = 'websites'
@@ -99,6 +100,17 @@ def main():
     bad_table = True
     websitename = null;
 
+    if (len(sys.argv)>1):
+        if (sys.argv[1] not in all_table_names):
+            print("Please enter a valid table name! (websites','testwebsite','accuweathercom','openweathermaporg','wettercom','wetterde','wetterdienstde)")
+            sys.exit()
+        try:
+            Load_Data(sys.argv[2], se, sys.argv[1])
+        except Exception as e:
+            print(e)
+            return 1
+
+    '''
     while(bad_table):
         websitename = input("Enter a table name: ")
         if(websitename not in all_table_names):
@@ -116,7 +128,7 @@ def main():
             print("Please enter a valid file path!")
             continue
         bad_dir = False
-
+    '''
     #for date in se.query(Dwd.measure_date).filter(Dwd.average_temp < 15):
         #print(date)
 
@@ -148,11 +160,18 @@ def Load_Data(file_name,se,tablename):
     elif tablename == "testwebsite":
         trennsymbol = ","
         klassname = Test_Website
+    elif tablename == 'openweathermaporg':
+        klassname = Openweathermaporg
+        trennsymbol = ","
+    elif tablename == 'wetterdienstde':
+        klassname = Wetterdienstde
+        trennsymbol = ","
 
     Load_Data_real(file_name, se, trennsymbol, klassname)
 
 def Load_Data_real(file_name,se,trennsymbol,klassname):
 
+    print(file_name)
     datafile = open(file_name, 'r')
     readCSV = csv.reader(datafile, delimiter=trennsymbol)
     count = 0
@@ -187,7 +206,7 @@ def Load_Data_real(file_name,se,trennsymbol,klassname):
                 se.add(nrow)
 
             else:
-                if count % 2 == 0:
+                if len(row)<1:#count % 2 == 0:
                     count = count +1
                     continue
                 if count == 1:
@@ -202,7 +221,7 @@ def Load_Data_real(file_name,se,trennsymbol,klassname):
                     except sqla.exc.IntegrityError:
                         # se.expunge(row)
                         se.rollback()
-                        print("°J°")
+                        print("Websiteneintrag ex. schon°J°")
                 date,hour = unix_time_to_normal_time(row[1])
                 date_p,hour_p =unix_time_to_normal_time(row[2])
 
@@ -232,7 +251,8 @@ def Load_Data_real(file_name,se,trennsymbol,klassname):
             except sqla.exc.IntegrityError:
                 # se.expunge(row)
                 se.rollback()
-                print(":/")
+                print("Eintrag existiert schon:")
+                print(row)
         count= count + 1
 
             # http://docs.sqlalchemy.org/en/latest/orm/tutorial.html#querying

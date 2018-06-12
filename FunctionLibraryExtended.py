@@ -158,7 +158,6 @@ def getResult(query):
     else:
         return np.vstack(result)
 
-
 ####################################################
 
 def main():
