@@ -70,8 +70,16 @@ def getDate(date, table, se, query=None):
         query = query.filter(table.c.measure_date == date)
         return query
 
-# look for max wind
-def getMaxWind(maxWind, table, se, query=None):
+# look for max wind >=
+def getMaxWindUp(maxWind, table, se, query=None):
+    r"""
+    get all data from table with max_wind_speed >= given value
+    :param maxWind: max_wind_speed value
+    :param table: which weather table is going to be used
+    :param se: Session Object containing connection information
+    :param query: Query Object which contains SQL query, if empty one will be created
+    :returns: Query Object, can be reused for other queries
+    """
     if query is None:
         query = se.query(table).filter(table.c.max_wind_speed >= maxWind)
         return query
@@ -79,8 +87,16 @@ def getMaxWind(maxWind, table, se, query=None):
         query = query.filter(table.c.max_wind_speed >= maxWind)
         return query
 
-# look for snow
-def getSnowHeight(snow, table, se, query=None):
+# look for snow height >=
+def getSnowHeightUp(snow, table, se, query=None):
+    r"""
+    get all data from table with snow_height >= given value
+    :param snow: snow_height value
+    :param table: which weather table is going to be used
+    :param se: Session Object containing connection information
+    :param query: Query Object which contains SQL query, if empty one will be created
+    :returns: Query Object, can be reused for other queries
+    """
     if query is None:
         query = se.query(table).filter(table.c.snow_height >= snow)
         return query
@@ -88,8 +104,16 @@ def getSnowHeight(snow, table, se, query=None):
         query = query.filter(table.c.snow_height >= snow)
         return query
 
-# look for avg wind speed
+# look for avg wind speed >=
 def getWindSpeedAvgUp(avgWindSpeed, table, se, query):
+    r"""
+    get all data from table with average_wind_speed >= given value
+    :param avgWindSpeed: average_wind_speed value
+    :param table: which weather table is going to be used
+    :param se: Session Object containing connection information
+    :param query: Query Object which contains SQL query, if empty one will be created
+    :returns: Query Object, can be reused for other queries
+    """
     if(query == None):
         query = se.query(table).filter(table.c.average_wind_speed >= avgWindSpeed)
         return query
@@ -98,6 +122,14 @@ def getWindSpeedAvgUp(avgWindSpeed, table, se, query):
         return query
 
 def getWindSpeedAvgDown(avgWindSpeed, table, se, query):
+    r"""
+    get all data from table with average_wind_speed <= given value
+    :param avgWindSpeed: average_wind_speed value
+    :param table: which weather table is going to be used
+    :param se: Session Object containing connection information
+    :param query: Query Object which contains SQL query, if empty one will be created
+    :returns: Query Object, can be reused for other queries
+    """
     if(query == None):
         query = se.query(table).filter(table.c.average_wind_speed <= avgWindSpeed)
         return query
@@ -107,6 +139,14 @@ def getWindSpeedAvgDown(avgWindSpeed, table, se, query):
 
 # look for max temp
 def getMaxTempUp(maxTemp, table, se, query=None):
+    r"""
+    get all data from table with max_temp >= given value
+    :param maxTemp: max_temp value
+    :param table: which weather table is going to be used
+    :param se: Session Object containing connection information
+    :param query: Query Object which contains SQL query, if empty one will be created
+    :returns: Query Object, can be reused for other queries
+    """
     if(query == None):
         query = se.query(table).filter(table.c.max_temp >= maxTemp)
         return query
