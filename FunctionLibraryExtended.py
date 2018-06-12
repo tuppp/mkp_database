@@ -40,10 +40,40 @@ def getRain(table, se, query=None):
         return query
 
 
+def getmaxSunHours(table, se, query=None):
+    r"""
+    Returns table Data with the most sun hours
+
+    :param table: which weather table is going to be used
+    :param se: Session Object containing connection information
+    :param query: Query Object which contains SQL query, if empty one will be created
+    :returns: Query Object, can be reused for other queries
+    """
+    if (query == None):
+        return se.query(table, func.max(table.c.sun_hours))
+    else:
+        return query.query(func.max(table.c.sun_hours))
+
+
+def getMinSunHours(table, se, query=None):
+    r"""
+    Returns table Data with the least sun hours
+
+    :param table: which weather table is going to be used
+    :param se: Session Object containing connection information
+    :param query: Query Object which contains SQL query, if empty one will be created
+    :returns: Query Object, can be reused for other queries
+    """
+    if (query == None):
+        return se.query(table, func.min(table.c.sun_hours))
+    else:
+        return query.query(func.min(table.c.sun_hours))
+
+
 # sunny days (x sun hours)
 def getSunHours(sunHours, table, se, query=None):
     r"""
-       Method gets all entries which matching amount of sun
+       Method gets all entries with matching amount of sun
        :param sunHours: desired sunhours
        :param table: which weather table is going to be used
        :param se: Session Object containing connection information
@@ -60,7 +90,7 @@ def getSunHours(sunHours, table, se, query=None):
 # hot days (x tempavg)
 def getTempAvg(avgTemp, table, se, query=None):
     r"""
-       Method gets all entries which desired average temperature
+       Method gets all entries with desired average temperature
        :param avgTemp: desired average temperature
        :param table: which weather table is going to be used
        :param se: Session Object containing connection information
@@ -73,6 +103,37 @@ def getTempAvg(avgTemp, table, se, query=None):
     else:
         query = query.filter(table.c.average_temp == avgTemp)
         return query
+
+
+def getMaxPrec(table, se, query=None):
+    r"""
+    Returns table Data with the most precipitation amount
+
+    :param table: which weather table is going to be used
+    :param se: Session Object containing connection information
+    :param query: Query Object which contains SQL query, if empty one will be created
+    :returns: Query Object, can be reused for other queries
+    """
+    if (query == None):
+        return se.query(table, func.max(table.c.precipitation_amount))
+    else:
+        return query.query(func.max(table.c.precipitation_amount))
+
+
+def getMinPrec(table, se, query=None):
+    r"""
+    Returns table Data with the least precipitation amount
+
+    :param table: which weather table is going to be used
+    :param se: Session Object containing connection information
+    :param query: Query Object which contains SQL query, if empty one will be created
+    :returns: Query Object, can be reused for other queries
+    """
+    if (query == None):
+        return se.query(table, func.min(table.c.precipitation_amount))
+    else:
+        return query.query(func.min(table.c.precipitation_amount))
+
 
 # a lot of rain
 def getPrecAvg(avgPrec, table, se, query=None):
@@ -196,7 +257,7 @@ def getWindSpeedAvgDown(avgWindSpeed, table, se, query):
 
 def getMaxTemp(table, se, query=None):
     r"""
-    Returns table Data with maximal temperature
+    Returns table Data with the highest temperature
 
     :param table: which weather table is going to be used
     :param se: Session Object containing connection information
@@ -240,6 +301,21 @@ def getMaxTempDown(maxTemp, table, se, query=None):
     else:
         query = query.filter(table.c.max_temp <= maxTemp)
         return query
+
+
+def getMinTemp(table, se, query=None):
+    r"""
+    Returns table Data with the lowest temperature
+
+    :param table: which weather table is going to be used
+    :param se: Session Object containing connection information
+    :param query: Query Object which contains SQL query, if empty one will be created
+    :returns: Query Object, can be reused for other queries
+    """
+    if (query == None):
+        return se.query(table, func.min(table.c.min_temp))
+    else:
+        return query.query(func.min(table.c.min_temp))
 
 # look for min # temp
 def getMinTempUp(minTemp, table, se, query=None):
@@ -413,6 +489,10 @@ def main():
     print()
     print("Postcode")
     print(getResult(getPostcode(26197, Dwd, se), se))
+
+    print()
+    print("Postcode with fewer columns")
+    print(getResult(getPostcode(26197,Dwd,se, getColumnList(["station_id", "station_name", "postcode", "precipitation_amount"], Dwd, se)),se))
 
     print()
     print("Rain")
