@@ -137,6 +137,20 @@ def getWindSpeedAvgDown(avgWindSpeed, table, se, query):
         query = query.filter(table.c.average_wind_speed <= avgWindSpeed)
         return query
 
+def getMaxTemp(table, se, query=None):
+    r"""
+    Returns table Data with maximal temperature
+
+    :param table: which weather table is going to be used
+    :param se: Session Object containing connection information
+    :param query: Query Object which contains SQL query, if empty one will be created
+    :returns: Query Object, can be reused for other queries
+    """
+    if (query == None):
+        return se.query(table, func.max(table.c.max_temp))
+    else:
+        return query.query(func.max(table.c.max_temp))
+
 # look for max temp
 def getMaxTempUp(maxTemp, table, se, query=None):
     r"""
@@ -178,7 +192,7 @@ def getMinTempUp(minTemp, table, se, query=None):
     :param table: which weather table is going to be used
     :param se: Session Object containing connection information
     :param query: Query Object which contains SQL query, if empty one will be created
-    :return: Query Object, can be reused for other queries
+    :returns: Query Object, can be reused for other queries
     """
     if(query == None):
         query = se.query(table).filter(table.c.min_temp >= minTemp)
@@ -195,7 +209,7 @@ def getMinTempDown(minTemp, table, se, query=None):
     :param table: which weather table is going to be used
     :param se: Session Object containing connection information
     :param query: Query Object which contains SQL query, if empty one will be created
-    :return: Query Object, can be reused for other queries
+    :returns: Query Object, can be reused for other queries
     """
     if(query == None):
         query = se.query(table).filter(table.c.min_temp <= minTemp)
@@ -213,7 +227,7 @@ def getCoverageUp(coverage, table, se, query=None):
     :param table: which weather table is going to be used
     :param se: Session Object containing connection information
     :param query: Query Object which contains SQL query, if empty one will be created
-    :return: Query Object, can be reused for other queries
+    :returns: Query Object, can be reused for other queries
     """
     if(query == None):
         query = se.query(table).filter(table.c.coverage_amount >= coverage)
@@ -230,7 +244,7 @@ def getCoverageDown(coverage, table, se, query=None):
     :param table: which weather table is going to be used
     :param se: Session Object containing connection information
     :param query: Query Object which contains SQL query, if empty one will be created
-    :return: Query Object, can be reused for other queries
+    :returns: Query Object, can be reused for other queries
     """
     if(query == None):
         query = se.query(table).filter(table.c.coverage_amount <= coverage)
@@ -239,6 +253,22 @@ def getCoverageDown(coverage, table, se, query=None):
         query = query.filter(table.c.coverage_amount <= coverage)
 
         return query
+
+
+def getMaxTemp(table, se, query=None):
+    r"""
+    Returns table Data for the given Coverage downwards
+
+    :param coverage: Coverage to sort downwards (<=)
+    :param table: which weather table is going to be used
+    :param se: Session Object containing connection information
+    :param query: Query Object which contains SQL query, if empty one will be created
+    :returns: Query Object, can be reused for other queries
+    """
+    if (query == None):
+        return se.query(table, func.max(table.c.max_temp))
+    else:
+        return query.
 
 def getColumnList(columnlist, table, se):
     r"""
