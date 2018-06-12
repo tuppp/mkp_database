@@ -312,26 +312,6 @@ def getCoverageDown(coverage, table, se, query=None):
         return query
 
 
-<<<<<<< HEAD
-def getMaxTemp(table, se, query=None):
-    r"""
-    Returns table Data for the given Coverage downwards
-
-    :param coverage: Coverage to sort downwards (<=)
-    :param table: which weather table is going to be used
-    :param se: Session Object containing connection information
-    :param query: Query Object which contains SQL query, if empty one will be created
-    :returns: Query Object, can be reused for other queries
-    """
-    if (query == None):
-        return se.query(table, func.max(table.c.max_temp))
-    else:
-        return query.
-
-=======
-# convert a list of column name strings into parameters to call, if no columns given: return the whole table
-# Eg: se.query(*getColumnList(columlist, table, se)).filter(table.c.postcode == postcode)
->>>>>>> 1e0b0d69a2dbe22781695a037411395f34c8d1fc
 def getColumnList(columnlist, table, se):
     r"""
     if columnlist is not specified: query on the whole table,
