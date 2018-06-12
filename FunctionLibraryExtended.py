@@ -228,7 +228,7 @@ def getResult(query,se):
         return np.vstack(result)
 
 #Setup Data
-def getConnectionData(UseDwd = bool):
+def getConnectionData(tablename):
     try:
         getResult()
         Base = declarative_base()
@@ -250,16 +250,35 @@ def getConnectionData(UseDwd = bool):
         else:
             print(error)
     # Get Table
-    if(UseDwd):
-        Dwd = metadata.tables['dwd']
-    else:
-        Dwd = metadata.tables['web']
-    return (Dwd,se)
+    table = metadata.tables[tablename]
+
+    return (table,se)
+
+def getConnectionDWD():
+    return getConnectionData('dwd')
+
+def getConnectionWetterdienstde():
+    return getConnectionData('wetterdienstde')
+
+def getConnectionWetterde():
+    return getConnectionData('wetterde')
+
+def getConnectionWettercom():
+    return getConnectionData('wettercom')
+
+def getConnectionOpenWeatherMaporg():
+    return getConnectionData('openweathermaporg')
+
+def getConnectionAccuweathercom():
+    return getConnectionData('accuweathercom')
+
+def getConnectionTest():
+    return getConnectionData('testwebsite')
 
 ####################################################
 
 def main():
-    Dwd,se = getConnectionData(true)
+    Dwd,se = getConnectionDWD()
 
     # # Test new functions
     print("Filter auf Postleitzahl danach auf avg_temp")
