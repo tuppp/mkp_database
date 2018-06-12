@@ -267,7 +267,6 @@ def getResult(query,se):
 #Setup Data
 def getConnectionData(tablename):
     try:
-        getResult()
         Base = declarative_base()
         engine = create_engine(
             'mysql+pymysql://dwdtestuser:asdassaj14123@weather.service.tu-berlin.de/dwdtest?use_unicode=1&charset=utf8&ssl_cipher=AES128-SHA')
