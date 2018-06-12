@@ -82,9 +82,6 @@ class Dwd(Base):
     min_temp = Column(Float)
     ground_min_temp = Column(Float)
 
-
-
-
 def main():
     print("Test!")
 
