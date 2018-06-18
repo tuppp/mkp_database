@@ -1,4 +1,5 @@
 import os
+import MySql.py as ms
 from os.path import isfile, join
 
 
@@ -15,7 +16,7 @@ def main():
         file = open('finished.txt', 'w')
         file.close()
 
-    files = os.listdir()
+    files = os.listdir("/home/webcrawling/webscraping_2018/data")
     print(files)
 
     finished_file = open('finished.txt', 'a')
@@ -32,13 +33,17 @@ def main():
                 if f[i] == "_" or f[i] == "-":
                     count = count+1
             if (f[i:] != 'wetter_com'):
-                if(f[i:] == WETTERDIENST):
+                if(f[i:] == 'WETTERDIENST'):
                     tablename = 'wetterdienstde'
                 else:
                     tablename = (f[i:])
 
             print('New File')
-            if os.system("python MySql.py "+tablename+" "+f):
+            print(tablename,"   ",f)
+            #ret = os.system("python MySql.py "+tablename+" "+f)
+            ret = ms.run(tablename,f)
+            print("ret:",ret)
+            if ret:
                 continue
             finished.append(f)
             finished_file.write(f+'\n')

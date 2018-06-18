@@ -38,6 +38,25 @@ class Website_Data():
     sun_hours = Column(Float)
     clouds = Column(String(50))
 
+class Website_Data_postcode():
+    measure_date = Column(Integer,primary_key=True) #TODO
+    measure_date_hour = Column(Integer)
+    measure_date_prediction = Column(Integer, primary_key=True)  # TODO
+    measure_date_prediction_hour = Column(Integer)
+    postcode = Column(Integer, primary_key=True)
+    city = Column(String(50))
+    temp = Column(Float)
+    humidity_prob =Column(Float)
+    precipitation_amount = Column(Float)
+    precipitation_type = Column(String(50))
+    wind_speed = Column(Float)
+    air_pressure_ground = Column(Float)
+    air_pressure_sea = Column(Float)
+    max_temp = Column(Float)
+    min_temp = Column(Float)
+    sun_hours = Column(Float)
+    clouds = Column(String(50))
+
 class Test_Website(Base,Website_Data):
     __tablename__ = 'testwebsite'
 
@@ -82,7 +101,11 @@ class Dwd(Base):
     min_temp = Column(Float)
     ground_min_temp = Column(Float)
 
+
+
+
 def main():
+    #return 1
     print("Test!")
 
     engine = create_engine('mysql+pymysql://dwdtestuser:asdassaj14123@weather.service.tu-berlin.de/dwdtest?use_unicode=1&charset=utf8&ssl_cipher=AES128-SHA')
@@ -130,10 +153,23 @@ def main():
         #print(date)
 
     se.close()
+'''
+    Für start über anderes Programm
+'''
+def run(file_name,tablename):
+    engine = create_engine('mysql+pymysql://dwdtestuser:asdassaj14123@weather.service.tu-berlin.de/dwdtest?use_unicode=1&charset=utf8&ssl_cipher=AES128-SHA')
+    #mysql --ssl-cipher=AES128-SHA -u dwdtestuser -p -h weather.service.tu-berlin.de dwdtest
+    Base.metadata.create_all(engine)
+    Session = sqla.orm.sessionmaker()
+    Session.configure(bind=engine)
+    se = Session()
 
-def queryExample(test):
-
-    print()
+    try:
+        return Load_Data(file_name, se, tablename)
+    except Exception as e:
+        print(e)
+        return 1
+    return 0
     #for istance in se.query(User).order
 
 
@@ -244,14 +280,13 @@ def Load_Data_real(file_name,se,trennsymbol,klassname):
 
                 se.add(nrow)
             try:
-                 se.commit()
-            except sqla.exc.IntegrityError:
-                # se.expunge(row)
-                se.rollback()
-                print("Eintrag existiert schon:")
-                print(row)
-        count= count + 1
+                se.commit()
+            except Exception as e:
+                print(e)
+                return 1
 
+        count= count + 1
+    return 0
             # http://docs.sqlalchemy.org/en/latest/orm/tutorial.html#querying
 
 def unix_time_to_normal_time(utime):
