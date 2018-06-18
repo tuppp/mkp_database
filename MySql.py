@@ -1,7 +1,6 @@
 import sqlalchemy as sqla
 import pymysql
 #import pysqlcipher3
-from numpy import genfromtxt
 import csv
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import *
