@@ -20,7 +20,7 @@ class Websites(Base):
 
 class Website_Data():
     measure_date = Column(Integer,primary_key=True) #TODO
-    measure_date_hour = Column(Integer)
+    measure_date_hour = Column(Integer, primary_key=True)
     measure_date_prediction = Column(Integer, primary_key=True)  # TODO
     measure_date_prediction_hour = Column(Integer)
     postcode = Column(Integer)
