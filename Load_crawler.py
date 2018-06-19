@@ -1,5 +1,6 @@
 import os
-import MySql.py as ms
+#import importlib
+import MySql as ms
 from os.path import isfile, join
 
 
@@ -15,8 +16,9 @@ def main():
     except FileNotFoundError:
         file = open('finished.txt', 'w')
         file.close()
-
-    files = os.listdir("/home/webcrawling/webscraping_2018/data")
+    
+    path_to_files = "/home/webcrawling/webscraping_2018/data"
+    files = os.listdir(path_to_files)
     print(files)
 
     finished_file = open('finished.txt', 'a')
@@ -39,9 +41,9 @@ def main():
                     tablename = (f[i:])
 
             print('New File')
-            print(tablename,"   ",f)
+            print(tablename,"   ",path_to_files,"/",f)
             #ret = os.system("python MySql.py "+tablename+" "+f)
-            ret = ms.run(tablename,f)
+            ret = ms.run(tablename,path_to_files+"/"+f)
             print("ret:",ret)
             if ret:
                 continue

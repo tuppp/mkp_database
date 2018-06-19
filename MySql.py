@@ -282,7 +282,7 @@ def Load_Data_real(file_name,se,trennsymbol,klassname):
                 se.commit()
             except Exception as e:
                 print(e)
-                return 1
+                #return 1
 
         count= count + 1
     return 0
