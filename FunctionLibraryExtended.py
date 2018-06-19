@@ -104,8 +104,6 @@ def getTempAvg(avgTemp, table, se, query=None):
         query = query.filter(table.c.average_temp == avgTemp)
         return query
 
-<<<<<<< HEAD
-
 def getMaxPrec(table, se, query=None):
     r"""
     Returns table Data with the most precipitation amount
@@ -137,8 +135,6 @@ def getMinPrec(table, se, query=None):
 
 
 # a lot of rain
-=======
->>>>>>> 888a91da4536bea49f7595a5f653146576ab0e2c
 def getPrecAvg(avgPrec, table, se, query=None):
     r"""
        Method gets all entries with average precipitation higher than/equal to input average precipitation
@@ -220,17 +216,17 @@ def getAvgWindSpeedUp(avgWind, table, se, query=None):
     """
     if(table == "dwd"):
         if query is None:
-            query = se.query(table).filter(table.c.average_wind_speed >= avgWindSpeed)
+            query = se.query(table).filter(table.c.average_wind_speed >= avgWind)
             return query
         else:
-            query = query.filter(table.c.average_wind_speed >= avgWindSpeed)
+            query = query.filter(table.c.average_wind_speed >= avgWind)
             return query
     else:
         if query is None:
-            query = se.query(table).filter(table.c.wind_speed >= avgWindSpeed)
+            query = se.query(table).filter(table.c.wind_speed >= avgWind)
             return query
         else:
-            query = query.filter(table.c.max_wind_speed >= avgWindSpeed)
+            query = query.filter(table.c.max_wind_speed >= avgWind)
             return query
 
 def getAvgWindSpeedDown(avgWindSpeed, table, se, query):
