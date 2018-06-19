@@ -5,7 +5,6 @@ from sqlalchemy.ext.declarative import declarative_base
 
 
 # Functions
-
 def getPostcode(postcode, table, se, query=None):
     r"""
     Method gets all entries with given postcode
@@ -474,6 +473,11 @@ def getConnectionData(tablename):
             print("Engine not found")
         else:
             print(error)
+    print("Retrieve table '"+tablename+"' from database:")
+    tables = []
+    for t in metadata.tables.keys():
+        tables.append(t)
+    print(tables)
     # Get Table
     table = metadata.tables[tablename]
 
@@ -506,9 +510,10 @@ def main():
     r"""
     TESTFUNCTION DO NOT USE
     """
-    Dwd, se = getConnectionAccuweathercom()
+    Dwd, se = getConnectionDWD()
 
     # # Test new functions
+    print()
     print("Filter auf Postleitzahl danach auf avg_temp")
     print(getResult(getTempAvg(0, Dwd, se, getPostcode(26197, Dwd, se)), se))
 
