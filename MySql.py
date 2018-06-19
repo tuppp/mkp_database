@@ -155,7 +155,7 @@ def main():
 '''
     Für start über anderes Programm
 '''
-def run(file_name,tablename):
+def run(tablename,file_name):
     engine = create_engine('mysql+pymysql://dwdtestuser:asdassaj14123@weather.service.tu-berlin.de/dwdtest?use_unicode=1&charset=utf8&ssl_cipher=AES128-SHA')
     #mysql --ssl-cipher=AES128-SHA -u dwdtestuser -p -h weather.service.tu-berlin.de dwdtest
     Base.metadata.create_all(engine)
@@ -276,7 +276,7 @@ def Load_Data_real(file_name,se,trennsymbol,klassname):
                     'sun_hours':row[14],
                     'clouds':row[15]
                 })
-                print(date," ",hour,"-",date_p,"-",row[4])
+                print(date," ","-",date_p," ",hour_p,"-",row[4])
                 se.add(nrow)
             try:
                 se.commit()
