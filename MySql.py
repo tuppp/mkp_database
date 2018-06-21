@@ -8,8 +8,13 @@ import datetime
 import sys
 
 
-dbname = 'pyWetter'
+DUMMY_POSTCODE = -1
+DUMMY_CITY = "Whiterun"
+
+path_to_login_file = "Login/login_data"
+
 newDB = True
+dbname = 'pyWetter'
 Base = declarative_base()
 all_table_names = {'websites','testwebsite','accuweathercom','openweathermaporg','wettercom','wetterde','wetterdienstde','dwd'}
 
@@ -19,31 +24,12 @@ class Websites(Base):
     url = Column(String(100))
 
 class Website_Data():
-    measure_date = Column(Integer,primary_key=True) #TODO
+    measure_date = Column(Integer,primary_key=True) #Wann die Vorgersage ausgelesen wurde
     measure_date_hour = Column(Integer)
-    measure_date_prediction = Column(Integer, primary_key=True)  # TODO
+    measure_date_prediction = Column(Integer, primary_key=True)  # Für wann die Vorhersage ist
     measure_date_prediction_hour = Column(Integer, primary_key=True)
-    postcode = Column(Integer)
-    city = Column(String(50), primary_key=True)
-    temp = Column(Float)
-    humidity_prob =Column(Float)
-    precipitation_amount = Column(Float)
-    precipitation_type = Column(String(50))
-    wind_speed = Column(Float)
-    air_pressure_ground = Column(Float)
-    air_pressure_sea = Column(Float)
-    max_temp = Column(Float)
-    min_temp = Column(Float)
-    sun_hours = Column(Float)
-    clouds = Column(String(50))
-
-class Website_Data_postcode():
-    measure_date = Column(Integer,primary_key=True) #TODO
-    measure_date_hour = Column(Integer)
-    measure_date_prediction = Column(Integer, primary_key=True)  # TODO
-    measure_date_prediction_hour = Column(Integer)
     postcode = Column(Integer, primary_key=True)
-    city = Column(String(50))
+    city = Column(String(50), primary_key=True)
     temp = Column(Float)
     humidity_prob =Column(Float)
     precipitation_amount = Column(Float)
@@ -106,8 +92,14 @@ class Dwd(Base):
 def main():
     #return 1
     print("Test!")
+    username, password = read_username_password(path_to_login_file)
+    s = 'mysql+pymysql://dwdtestuser:asdassaj14123@weather.service.tu-berlin.de/dwdtest?use_unicode=1&charset=utf8&ssl_cipher=AES128-SHA'
 
-    engine = create_engine('mysql+pymysql://dwdtestuser:asdassaj14123@weather.service.tu-berlin.de/dwdtest?use_unicode=1&charset=utf8&ssl_cipher=AES128-SHA')
+    p = 'mysql+pymysql://'+username+':'+password+'@weather.service.tu-berlin.de/dwdtest?use_unicode=1&charset=utf8&ssl_cipher=AES128-SHA'
+    print (s == p)
+    print(s)
+    print(p)
+    engine = create_engine('mysql+pymysql://'+username+':'+password+'@weather.service.tu-berlin.de/dwdtest?use_unicode=1&charset=utf8&ssl_cipher=AES128-SHA')
     #mysql --ssl-cipher=AES128-SHA -u dwdtestuser -p -h weather.service.tu-berlin.de dwdtest
     Base.metadata.create_all(engine)
     Session = sqla.orm.sessionmaker()
@@ -129,34 +121,39 @@ def main():
             print(e)
             return 1
 
-    '''
-    while(bad_table):
-        websitename = input("Enter a table name: ")
-        if(websitename not in all_table_names):
-            print("Please enter a valid table name! (websites','testwebsite','accuweathercom','openweathermaporg','wettercom','wetterde','wetterdienstde)")
-            continue
-        else:
-            bad_table = False
+    else:
+        while(bad_table):
+            websitename = input("Enter a table name: ")
+            if(websitename not in all_table_names):
+                print("Please enter a valid table name! (websites','testwebsite','accuweathercom','openweathermaporg','wettercom','wetterde','wetterdienstde)")
+                continue
+            else:
+                bad_table = False
 
-    bad_dir = True
-    while (bad_dir):
-        path = input("Enter a file path: ")
-        try:
-            Load_Data(path, se, websitename)
-        except:
-            print("Please enter a valid file path!")
-            continue
-        bad_dir = False
-    '''
-    #for date in se.query(Dwd.measure_date).filter(Dwd.average_temp < 15):
-        #print(date)
+        bad_dir = True
+        while (bad_dir):
+            path = input("Enter a file path: ")
+            try:
+                Load_Data(path, se, websitename)
+            except:
+                print("Please enter a valid file path!")
+                continue
+            bad_dir = False
+
 
     se.close()
-'''
-    Für start über anderes Programm
-'''
+
+def read_username_password(path_to_login_file):
+    file = open(path_to_login_file, 'r')
+    username = (file.readline()[10:-1])
+    password = file.readline()[10:]
+    file.close()
+    return username,password
+
+
 def run(tablename,file_name):
-    engine = create_engine('mysql+pymysql://dwdtestuser:asdassaj14123@weather.service.tu-berlin.de/dwdtest?use_unicode=1&charset=utf8&ssl_cipher=AES128-SHA')
+    username, password = read_username_password(path_to_login_file)
+    engine = create_engine('mysql+pymysql://'+username+':'+password+'@weather.service.tu-berlin.de/dwdtest?use_unicode=1&charset=utf8&ssl_cipher=AES128-SHA')
     #mysql --ssl-cipher=AES128-SHA -u dwdtestuser -p -h weather.service.tu-berlin.de dwdtest
     Base.metadata.create_all(engine)
     Session = sqla.orm.sessionmaker()
@@ -203,14 +200,19 @@ def Load_Data(file_name,se,tablename):
 
 def Load_Data_real(file_name,se,trennsymbol,klassname):
 
-    print(file_name)
     datafile = open(file_name, 'r')
     readCSV = csv.reader(datafile, delimiter=trennsymbol)
     count = 0
     for row in readCSV:
         for i in range(len(row)):
+
             if row[i] == "nan" or row[i] == "None" or row[i] == "":
-                row[i] = sqla.sql.null()
+                if i == 3:
+                    row[i] = DUMMY_POSTCODE
+                elif i == 4:
+                    row[i] = DUMMY_CITY
+                else:
+                    row[i] = sqla.sql.null()
         if count > 0:
             if klassname == Dwd:
                 nrow = Dwd(**{
