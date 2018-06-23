@@ -93,12 +93,6 @@ def main():
     #return 1
     print("Test!")
     username, password = read_username_password(path_to_login_file)
-    s = 'mysql+pymysql://dwdtestuser:asdassaj14123@weather.service.tu-berlin.de/dwdtest?use_unicode=1&charset=utf8&ssl_cipher=AES128-SHA'
-
-    p = 'mysql+pymysql://'+username+':'+password+'@weather.service.tu-berlin.de/dwdtest?use_unicode=1&charset=utf8&ssl_cipher=AES128-SHA'
-    print (s == p)
-    print(s)
-    print(p)
     engine = create_engine('mysql+pymysql://'+username+':'+password+'@weather.service.tu-berlin.de/dwdtest?use_unicode=1&charset=utf8&ssl_cipher=AES128-SHA')
     #mysql --ssl-cipher=AES128-SHA -u dwdtestuser -p -h weather.service.tu-berlin.de dwdtest
     Base.metadata.create_all(engine)
