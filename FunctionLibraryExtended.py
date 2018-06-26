@@ -422,6 +422,11 @@ def getCoverageDown(coverage, table, se, query=None):
         query = query.filter(table.c.coverage_amount <= coverage)
         return query
 
+def compare_average_temp(Dwd, table, se):
+    r"""
+    returns table data with columns station name, postcode, measure date, Dwd temp, table temp
+    """
+    return getResult(se.query(Dwd.c.station_name, Dwd.c.postcode, Dwd.c.measure_date, Dwd.c.average_temp, table.c.temp).filter(Dwd.c.measure_date == table.c.measure_date), se)
 
 def getColumnList(columnlist, table, se):
     r"""
@@ -531,6 +536,10 @@ def main():
     Dwd, se = getConnectionDWD()
 
     # # Test new functions
+    print()
+    print("Compare average temperature")
+    print(compare_average_temp(Dwd, getConnectionAccuweathercom()[0], se))
+
     print()
     print("Filter auf Postleitzahl danach auf avg_temp")
     print(getResult(getTempAvg(0, Dwd, se, getPostcode(26197, Dwd, se)), se))
