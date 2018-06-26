@@ -474,7 +474,7 @@ def read_username_password(path_to_login_file):
 #Setup Data
 def getConnectionData(tablename):
     try:
-        username, password = read_username_password(path_to_login_file)
+        username, password = read_username_password("Login/login_data")
         Base = declarative_base()
         engine = create_engine(
             'mysql+pymysql://'+username+':'+password+'@weather.service.tu-berlin.de/dwdtest?use_unicode=1&charset=utf8&ssl_cipher=AES128-SHA')
