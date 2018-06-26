@@ -8,6 +8,26 @@ from sqlalchemy.ext.declarative import declarative_base
 #Path to userdata file
 path_to_login_file = "Login/login_data"
 
+
+def compare_average_temp(Dwd, table, se):
+    r"""
+    returns table data with columns station name, postcode, measure date, Dwd temp, table temp
+    """
+    return getResult(se.query(Dwd.c.station_name, Dwd.c.postcode, Dwd.c.measure_date, Dwd.c.average_temp, table.c.temp).filter(Dwd.c.measure_date == table.c.measure_date).filter(Dwd.c.postcode == table.c.postcode), se)
+
+def compare_clouds(Dwd, table, se):
+    r"""
+    :return: table data with colums station name, postcode, measure date, Dwd, clouds
+    """
+    return getResult(se.query(Dwd.c.station_name, Dwd.c.postcode, Dwd.c.measure_date, Dwd.c.coverage_amount, table.c.clouds).filter(Dwd.c.measure_date == table.c.measure_date).filter(Dwd.c.postcode == table.c.postcode), se)
+
+def compare_humidity(Dwd, table, se):
+    r"""
+    :return: table data with colums station name, postcode, measure date, Dwd, clouds
+    """
+    return getResult(se.query(Dwd.c.station_name, Dwd.c.postcode, Dwd.c.measure_date, Dwd.c.relative_himidity, table.c.humidity_prob).filter(Dwd.c.measure_date == table.c.measure_date).filter(Dwd.c.postcode == table.c.postcode), se)
+
+
 # Functions
 def getPostcode(postcode, table, se, query=None):
     r"""
@@ -422,11 +442,6 @@ def getCoverageDown(coverage, table, se, query=None):
         query = query.filter(table.c.coverage_amount <= coverage)
         return query
 
-def compare_average_temp(Dwd, table, se):
-    r"""
-    returns table data with columns station name, postcode, measure date, Dwd temp, table temp
-    """
-    return getResult(se.query(Dwd.c.station_name, Dwd.c.postcode, Dwd.c.measure_date, Dwd.c.average_temp, table.c.temp).filter(Dwd.c.measure_date == table.c.measure_date), se)
 
 def getColumnList(columnlist, table, se):
     r"""
@@ -539,6 +554,14 @@ def main():
     print()
     print("Compare average temperature")
     print(compare_average_temp(Dwd, getConnectionAccuweathercom()[0], se))
+
+    print()
+    print("Compare clouds")
+    print(compare_clouds(Dwd, getConnectionOpenWeatherMaporg()[0], se))
+
+    print()
+    print("Compare humidity")
+    print(compare_humidity(Dwd, getConnectionOpenWeatherMaporg()[0], se))
 
     print()
     print("Filter auf Postleitzahl danach auf avg_temp")
