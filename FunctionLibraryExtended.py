@@ -425,8 +425,50 @@ def getCoverageDown(coverage, table, se, query=None):
 def compare_average_temp(Dwd, table, se):
     r"""
     returns table data with columns station name, postcode, measure date, Dwd temp, table temp
+
+    :param Dwd: dwd table
+    :param table: another table to compare
+    :param se: session object containing connection information
+    :returns: result table
     """
-    return getResult(se.query(Dwd.c.station_name, Dwd.c.postcode, Dwd.c.measure_date, Dwd.c.average_temp, table.c.temp).filter(Dwd.c.measure_date == table.c.measure_date), se)
+    return getResult(se.query(Dwd.c.station_name, Dwd.c.postcode, Dwd.c.measure_date, Dwd.c.average_temp, table.c.temp).filter(Dwd.c.measure_date == table.c.measure_date, Dwd.c.postcode == table.c.postcode), se)
+
+def compare_air_pressure(Dwd, table, se):
+    r"""
+    returns table data with columns station name, postcode, measure date, Dwd air_pressure, table air_pressure_ground
+
+    :param Dwd: dwd table
+    :param table: another table to compare
+    :param se: session object containing connection information
+    :returns: result table
+    """
+    return getResult(se.query(Dwd.c.station_name, Dwd.c.postcode, Dwd.c.measure_date, Dwd.c.air_pressure, table.c.air_pressure_ground).filter(Dwd.c.measure_date == table.c.measure_date, Dwd.c.postcode == table.c.postcode), se)
+
+def compare_wind_speed(Dwd, table, se):
+    r"""
+    returns table data with columns station name, postcode, measure date, Dwd average_wind_speed, table wind_speed
+
+    :param Dwd: dwd table
+    :param table: another table to compare
+    :param se: session object containing connection information
+    :returns: result table
+    """
+    return getResult(se.query(Dwd.c.station_name, Dwd.c.postcode, Dwd.c.measure_date, Dwd.c.average_wind_speed, table.c.wind_speed).filter(Dwd.c.measure_date == table.c.measure_date, Dwd.c.postcode == table.c.postcode), se)
+
+def compare_sun_hours(Dwd, table, se):
+    r"""
+    returns table data with columns station name, postcode, measure date, Dwd sun_hours, table sun_hours
+
+    :param Dwd: dwd table
+    :param table: another table to compare
+    :param se: session object containing connection information
+    :returns: result table
+    """
+    return getResult(se.query(Dwd.c.station_name, Dwd.c.postcode, Dwd.c.measure_date, Dwd.c.sun_hours, table.c.sun_hours).filter(Dwd.c.measure_date == table.c.measure_date, Dwd.c.postcode == table.c.postcode), se)
+
+def compare_all(attribute,se):
+    compare_average_temp(getConnectionDWD()[0], getConnectionWettercom()[0])
+
 
 def getColumnList(columnlist, table, se):
     r"""
@@ -538,7 +580,19 @@ def main():
     # # Test new functions
     print()
     print("Compare average temperature")
-    print(compare_average_temp(Dwd, getConnectionAccuweathercom()[0], se))
+    print(compare_average_temp(Dwd, getConnectionWettercom()[0], se))
+
+    print()
+    print("Compare sun_hours")
+    print(compare_sun_hours(Dwd, getConnectionWettercom()[0], se))
+
+    print()
+    print("Compare wind_speed")
+    print(compare_wind_speed(Dwd, getConnectionWettercom()[0], se))
+
+    print()
+    print("Compare air_pressure")
+    print(compare_air_pressure(Dwd, getConnectionWettercom()[0], se))
 
     print()
     print("Filter auf Postleitzahl danach auf avg_temp")
