@@ -1,11 +1,11 @@
-import sqlalchemy as sqla
-import pymysql
-#import pysqlcipher3
-import csv
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import *
 import datetime
 import sys
+import csv
+
+import pymysql
+import sqlalchemy as sqla
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import *
 
 
 DUMMY_POSTCODE = -1
@@ -61,7 +61,6 @@ class Wetterdienstde(Base,Website_Data):
     __tablename__ ='wetterdienstde'
 
 
-#https://stackoverflow.com/questions/31394998/using-sqlalchemy-to-load-csv-file-into-a-database
 class Dwd(Base):
     __tablename__ ='dwd'
 
@@ -87,22 +86,16 @@ class Dwd(Base):
     ground_min_temp = Column(Float)
 
 
-
-
 def main():
-    #return 1
     print("Test!")
     username, password = read_username_password(path_to_login_file)
     engine = create_engine('mysql+pymysql://'+username+':'+password+'@weather.service.tu-berlin.de/dwdtest?use_unicode=1&charset=utf8&ssl_cipher=AES128-SHA')
-    #mysql --ssl-cipher=AES128-SHA -u dwdtestuser -p -h weather.service.tu-berlin.de dwdtest
+
     Base.metadata.create_all(engine)
     Session = sqla.orm.sessionmaker()
     Session.configure(bind=engine)
     se = Session()
 
-    #TODO Pfad ändern
-    #Load_Data('C:\\Users\Vika\Documents\TU\ProgPraktikum\git\ssdasd.txt',se,'accuweathercom')
-    bad_table = True
     websitename = null;
 
     if (len(sys.argv)>1):
@@ -116,6 +109,7 @@ def main():
             return 1
 
     else:
+        bad_table = True
         while(bad_table):
             websitename = input("Enter a table name: ")
             if(websitename not in all_table_names):
@@ -138,6 +132,11 @@ def main():
     se.close()
 
 def read_username_password(path_to_login_file):
+    r"""
+    Reads the username and password from the given path
+    :param path_to_login_file: file path to the login data
+    :return: username and password, given in the file
+    """
     file = open(path_to_login_file, 'r')
     username = (file.readline()[10:-1])
     password = file.readline()[10:]
@@ -146,9 +145,15 @@ def read_username_password(path_to_login_file):
 
 
 def run(tablename,file_name):
+    r"""
+    starts Load_Data
+    :param tablename: the table to upload into
+    :param file_name: the file to load from
+    :return: 0 = True ; 1 = False
+    """
     username, password = read_username_password(path_to_login_file)
     engine = create_engine('mysql+pymysql://'+username+':'+password+'@weather.service.tu-berlin.de/dwdtest?use_unicode=1&charset=utf8&ssl_cipher=AES128-SHA')
-    #mysql --ssl-cipher=AES128-SHA -u dwdtestuser -p -h weather.service.tu-berlin.de dwdtest
+
     Base.metadata.create_all(engine)
     Session = sqla.orm.sessionmaker()
     Session.configure(bind=engine)
@@ -160,16 +165,15 @@ def run(tablename,file_name):
         print(e)
         return 1
     return 0
-    #for istance in se.query(User).order
-
-
-def printTables(m):
-    for table in m.tables.values():
-        print(table.name)
-        for column in table.c:
-            print(column.name)
 
 def Load_Data(file_name,se,tablename):
+    r"""
+    loads a preset of parameters and starts uploading data (using Load_Data_real)
+    :param file_name: the csv-file to upload
+    :param se: the session to work on
+    :param tablename: the table to upload into
+    :return: void
+    """
     klassname = Dwd
     trennsymbol = ";"
     if tablename == "dwd":
@@ -193,7 +197,14 @@ def Load_Data(file_name,se,tablename):
     Load_Data_real(file_name, se, trennsymbol, klassname)
 
 def Load_Data_real(file_name,se,trennsymbol,klassname):
-
+    r"""
+    uploads the csv-file into the given table on the server
+    :param file_name: the csv-file to upload
+    :param se: the session to work on
+    :param trennsymbol: delimiter of the csv-file
+    :param klassname: the name of the website-class
+    :return: 0 = True ; 1 = False
+    """
     datafile = open(file_name, 'r')
     readCSV = csv.reader(datafile, delimiter=trennsymbol)
     count = 0
@@ -251,7 +262,7 @@ def Load_Data_real(file_name,se,trennsymbol,klassname):
                         se.rollback()
                         print("Websiteneintrag ex. schon°J°")
                 date,hour = unix_time_to_normal_time(row[1])
-                date_p,hour_p =unix_time_to_normal_time(row[2])
+                date_p,hour_p = unix_time_to_normal_time(row[2])
 
                 nrow = klassname(**{
                     'measure_date' :date,
@@ -278,13 +289,17 @@ def Load_Data_real(file_name,se,trennsymbol,klassname):
                 se.commit()
             except Exception as e:
                 print(e)
-                #return 1
+                return 1
 
-        count= count + 1
+        count = count + 1
     return 0
-            # http://docs.sqlalchemy.org/en/latest/orm/tutorial.html#querying
 
 def unix_time_to_normal_time(utime):
+    r"""
+    converts a unix-timestamp into the YYYY/MM/DD format and roughly the time of day in hours
+    :param utime: the unix-timestamp to convert
+    :return: the date as YYYYMMDD and time of day as HH
+    """
     stamp = int(float(utime))
     date = datetime.datetime.fromtimestamp(stamp).strftime('%Y%m%d')
     hour = datetime.datetime.fromtimestamp(stamp).strftime('%H')
@@ -292,4 +307,3 @@ def unix_time_to_normal_time(utime):
 
 if __name__ == "__main__":
     main()
-
