@@ -6,7 +6,7 @@ from sqlalchemy.ext.declarative import declarative_base
 
 
 #Path to userdata file
-path_to_login_file = "Login/example_login_data"
+path_to_login_file = "Login/login_data"
 
 # Functions
 def getPostcode(postcode, table, se, query=None):
@@ -474,7 +474,7 @@ def read_username_password(path_to_login_file):
 #Setup Data
 def getConnectionData(tablename):
     try:
-        username, password = read_username_password("Login/login_data")
+        username, password = read_username_password(path_to_login_file)
         Base = declarative_base()
         engine = create_engine(
             'mysql+pymysql://'+username+':'+password+'@weather.service.tu-berlin.de/dwdtest?use_unicode=1&charset=utf8&ssl_cipher=AES128-SHA')
