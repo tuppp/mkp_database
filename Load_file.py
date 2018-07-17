@@ -141,7 +141,7 @@ def read_username_password(path_to_login_file):
     """
     file = open(path_to_login_file, 'r')
     username = (file.readline()[10:-1])
-    password = file.readline()[10:]
+    password = file.readline()[10:-1]
     file.close()
     return username,password
 
