@@ -1,0 +1,26 @@
+INFO:
+
+Load_file.py
+	starten: python Load_file.py tablename filepath
+		
+		 mit allen optionalen Parametern:
+		 python Load_file.py tablename filepath -all x 	
+
+	Läd die Datei aus filepath in die Tabelle tablename. Tabelle muss bereits in der Datenbank existieren.
+	Wenn in der Datei(filepath) Duplikate auftreten bricht der Vorgang ab.
+	
+	Optionale Parameter können einzeln und in beliebiger Reihenfolge nach den pflicht Parametern angehängt werden.
+	-all
+		Wenn nicht abgebrochen werden soll mit Parameter -all starten.
+	x
+		Integer, gibt an wie viele Zeilen auf einmal commitet werden sollen.
+		Standard ist 1 Zeile pro commit.
+		Größere Blöcke erhöhen die Performance.
+
+Load_crawler.py
+	starten: python Load_crawler.py
+	Läd alle Dateien aus dem data ordner der crawler hoch.
+	Verwendet Load_file.py ohne optionale Parameter.
+
+Login
+	In diesem Ordner müssen die Login Daten für den Server liegen 
